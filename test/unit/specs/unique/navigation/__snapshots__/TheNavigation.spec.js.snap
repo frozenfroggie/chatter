@@ -1,0 +1,25 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`TheNavigation matches snapshot 1`] = `
+<div class="navigation">
+    <div class="avatarContainer">
+        <!---->
+        <div class="online"></div>
+    </div>
+    <div class="conversations">
+        <!---->
+    </div>
+    <div class="friends">
+        <!---->
+    </div>
+    <div class="addFriends">
+        <!---->
+    </div>
+    <div class="settings">
+        <!---->
+    </div>
+    <div class="logout">
+        <!---->
+    </div>
+</div>
+`;

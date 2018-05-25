@@ -1,0 +1,15 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Message matches snapshot 1`] = `
+<li class="message">
+    <div class="avatarContainer">
+        <!---->
+    </div>
+    <div class="content contentLeft">
+        Lorem ipsum dolor sit amet, sed odio voluptaria eu. Tollit populo definiebas cum ut, eos graece causae cu. Convenire prodesset argumentum vix ut, ne mel mutat noster. Eam at veri facilisi menandri.
+    </div>
+    <div class="timestamp timestampLeft">
+        30 FEBRUARY 12:30
+    </div>
+</li>
+`;

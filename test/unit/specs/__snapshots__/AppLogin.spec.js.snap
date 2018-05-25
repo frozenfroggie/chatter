@@ -1,0 +1,13 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`AppLogin matches snapshot 1`] = `
+<div class="login">
+    <!---->
+    <div class="loginHeader"> Login to your account </div>
+    <!---->
+    <button type="button" name="" class="loginBtn">LOG IN</button>
+    <div class="forgotPassword"> Forgot password? </div>
+    <div class="signup">
+        Don't have an account? <span> Sign up </span></div>
+</div>
+`;

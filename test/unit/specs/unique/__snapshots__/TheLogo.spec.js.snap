@@ -1,0 +1,12 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`TheLogo matches snapshot 1`] = `
+<div class="logoContainer">
+    <div class="logo">
+        <div class="logoInner"></div>
+    </div>
+    <div class="logoText">
+        <h1> CHATTER </h1>
+    </div>
+</div>
+`;

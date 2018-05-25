@@ -1,0 +1,15 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Friend matches snapshot 1`] = `
+<li class="conversationLabel">
+    <div class="avatarContainer">
+        <!---->
+        <div class="online"></div>
+    </div>
+    <div class="content">
+        <div class="friendName">
+            Christianna Lynn
+        </div>
+    </div>
+</li>
+`;

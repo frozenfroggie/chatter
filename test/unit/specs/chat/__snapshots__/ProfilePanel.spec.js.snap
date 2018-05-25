@@ -1,0 +1,15 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ProfilePanel matches snapshot 1`] = `
+<div class="searchPanelContainer">
+    <div class="searchPanel">
+        <div class="arrowLeftContainer">
+            <!---->
+        </div>
+        <div class="profileName">
+            <div> Christianna Lynn </div>
+            <div class="online"></div>
+        </div>
+    </div>
+</div>
+`;

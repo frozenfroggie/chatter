@@ -1,0 +1,21 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Conversation matches snapshot 1`] = `
+<div class="conversationLabel">
+    <div class="avatarContainer">
+        <!---->
+        <div class="online"></div>
+    </div>
+    <div class="content">
+        <div class="conversationName">
+            Christianna Lynn
+        </div>
+        <div class="conversationPreview">
+            Hello, amazing work...
+        </div>
+    </div>
+    <div class="timestamp">
+        12:53
+    </div>
+</div>
+`;
