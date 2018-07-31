@@ -1,5 +1,5 @@
 <template>
-  <div class="login">
+  <div class="login" @keypress.enter="login">
 
     <the-logo />
 
@@ -7,7 +7,7 @@
 
     <the-login-form />
 
-    <button type="button" name="" class='loginBtn' @click='$emit("login")'>LOG IN</button>
+    <button type="button" name="" class='loginBtn' @click='login'>LOG IN</button>
 
     <div class="forgotPassword"> Forgot password? </div>
 
@@ -19,6 +19,7 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex'
 import TheLogo from './unique/TheLogo.vue'
 import TheLoginForm from './unique/forms/TheLoginForm.vue'
 
@@ -26,6 +27,9 @@ export default {
   components: {
     TheLogo,
     TheLoginForm
+  },
+  methods: {
+    ...mapActions(['login'])
   }
 }
 </script>

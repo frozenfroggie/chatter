@@ -4,39 +4,40 @@
     <transition
       enter-active-class='animated fadeInLeft'
       leave-active-class='animated fadeOutLeft'>
-      <the-navigation v-if='loggedIn' v-on:logout='logout'/>
+      <the-navigation v-if='authenticated'/>
     </transition>
 
     <transition
       enter-active-class='animated fadeInUp'
       leave-active-class='animated fadeOutUp'>
-      <router-view v-if='shouldShowConversations && loggedIn'/>
+      <router-view v-if='shouldShowConversations && authenticated'/>
     </transition>
 
     <transition
       enter-active-class='animated fadeInRight'
       leave-active-class='animated fadeOutRight'>
-      <router-view key='chat' v-if='shouldShowChat && loggedIn' name="chat" />
+      <router-view name="chat" v-if='shouldShowChat && authenticated'/>
     </transition>
 
     <transition
       enter-active-class='animated fadeInUp'
       leave-active-class='animated fadeOutUp'
       mode='out-in'>
-      <router-view name='login' v-if='!loggedIn' v-on:login='loggedIn = true'/>
+      <router-view name='login' v-if='!authenticated'/>
     </transition>
 
     <transition
       enter-active-class='animated fadeInUp'
       leave-active-class='animated fadeOutUp'
       mode='out-in'>
-      <router-view name='signup' v-if='!loggedIn' v-on:signup='loggedIn = true'/>
+      <router-view name='signup' v-if='!authenticated'/>
     </transition>
 
     <transition
       enter-active-class='animated fadeIn'
       leave-active-class='animated fadeOut'>
-      <router-link to="friends" tag='div' class='floatingActionBtn' v-show='floatingActionBtn && loggedIn'>
+      <router-link to="friends" tag='div' class='floatingActionBtn'
+        v-show='floatingActionBtn && authenticated'>
         <icon name='plus' class='plus'></icon>
       </router-link>
     </transition>
@@ -45,6 +46,8 @@
 </template>
 
 <script>
+import { mapGetters, mapActions } from 'vuex'
+// import moment from 'moment'
 import TheNavigation from './components/unique/navigation/TheNavigation.vue'
 
 export default {
@@ -56,9 +59,29 @@ export default {
     return {
       floatingActionBtn: true,
       shouldShowConversations: true,
-      shouldShowChat: false,
-      loggedIn: false
+      shouldShowChat: false
     }
+  },
+  beforeMount () {
+    const script = document.createElement('script')
+    script.type = 'text/javascript'
+    script.src = 'https://chatter-server.herokuapp.com/socket.io/socket.io.js'
+    document.getElementsByTagName('head')[0].appendChild(script)
+    script.addEventListener('load', () => {
+      this.socketConnect('https://chatter-server.herokuapp.com')
+      this.socket.on('connect', () => {
+        console.log('Connected to server')
+      })
+      this.socket.on('newMessage', newMessage => {
+        console.log('New message', newMessage)
+        this.saveNewMessage(newMessage).then(() => {
+          this.scrollToBottom()
+        })
+      })
+      this.socket.on('disconnect', () => {
+        console.log('Disconnected from server')
+      })
+    })
   },
   mounted () {
     if (window.innerWidth > 720) {
@@ -66,20 +89,20 @@ export default {
     }
     window.addEventListener('resize', this.handleResizing)
   },
+  computed: {
+    ...mapGetters(['authenticated', 'friends', 'socket'])
+  },
   methods: {
+    ...mapActions(['socketConnect', 'socketCustomEvent', 'saveNewMessage', 'getConversations', 'scrollToBottom']),
     handleResizing () {
       if (window.innerWidth > 720) {
         this.shouldShowChat = true
         this.shouldShowConversations = true
-      } else if (this.shouldShowConversations && !this.$route.params.friendName) {
+      } else if (this.shouldShowConversations && !this.$route.params.conversationId) {
         this.shouldShowChat = false
       } else if (this.shouldShowChat) {
         this.shouldShowConversations = false
       }
-    },
-    logout () {
-      this.loggedIn = false
-      this.$router.push('/')
     }
   },
   watch: {
@@ -92,14 +115,32 @@ export default {
       } else {
         this.floatingActionBtn = false
       }
-      if (to.params.friendName && window.innerWidth > 720) {
+      if (to.params.conversationId && window.innerWidth > 720) {
         this.shouldShowChat = true
         this.shouldShowConversations = true
-      } else if (!to.params.friendName) {
+      } else if (!to.params.conversationId) {
         this.shouldShowConversations = true
       } else {
         this.shouldShowChat = true
         this.shouldShowConversations = false
+      }
+    },
+    authenticated (isAuthenticated) {
+      if (isAuthenticated) {
+        this.getConversations()
+        // this.friends.forEach(friend => {
+        //   this.socketCustomEvent({
+        //     eventName: 'enterConversation',
+        //     data: friend.conversationId
+        //   })
+        // })
+      } else {
+        // this.friends.forEach(friend => {
+        //   this.socketCustomEvent({
+        //     eventName: 'leaveConversation',
+        //     data: friend.conversationId
+        //   })
+        // })
       }
     }
   }
@@ -125,7 +166,7 @@ export default {
 body {
   margin: 0px;
   width: 100%;
-  background-color: rgb(46, 59, 79);
+  background-color: #323F57;
   overflow: hidden;
 }
 a {
@@ -165,7 +206,7 @@ input:-webkit-autofill:active {
   right: 5%;
   width: 45px;
   height: 45px;
-  background-color: rgb(38, 49, 66);
+  background-color: #5082CD;
   border-radius: 50%;
   box-shadow: 3px 3px 18px 0px rgba(0,0,0,0.75);
 }
@@ -180,11 +221,11 @@ input:-webkit-autofill:active {
 }
 .plus {
   color: white;
-  opacity: .4;
+  opacity: .7;
 }
 @media only screen and (min-width: 720px) {
   .app {
-    grid-template-columns: 46px 1fr 1fr;
+    grid-template-columns: 46px 2fr 3fr;
     grid-template-areas: '. content helper';
   }
 }

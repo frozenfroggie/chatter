@@ -1,26 +1,41 @@
 <template>
-  <li class='conversationLabel' @click='openChat'>
-    <div class='avatarContainer'>
-      <icon name="user-circle" class='avatar' scale="2.5"></icon>
-      <div :class='{online: friend.isOnline}'></div>
-    </div>
-    <router-link
-      :to="{ name: 'chat', params: {friendName: friend.name }}"
-      class='content'
+  <li>
+    <div
+      @click='openChat'
+      :to="{ name: 'chat', params: {conversationId}}"
+      class='conversationLabel'
       tag='div'>
-      <div class='friendName'>
-        {{ friend.name }}
+      <div class='avatarContainer'>
+        <icon name="user-circle" class='avatar' scale="2.5"></icon>
+        <div :class='{online: true}'></div>
       </div>
-    </router-link>
+      <div class='content'>
+        <div class='friendName'>
+          {{ friend.username.charAt(0).toUpperCase() + friend.username.slice(1) }}
+        </div>
+      </div>
+    </div>
   </li>
 </template>
 
 <script>
 export default {
-  props: ['friend'],
+  props: ['friend', 'conversations'],
   methods: {
     openChat () {
-      this.$router.push(this.conversation.name)
+      this.$store.dispatch('getMessages', this.conversationId)
+      this.$router.push('/chat/' + this.conversationId)
+    }
+  },
+  computed: {
+    conversationId () {
+      let conversationId
+      this.conversations.forEach(conversationOne => {
+        conversationId = this.friend.conversations.find(conversation => {
+          return conversationOne._id === conversation
+        })
+      })
+      return conversationId
     }
   }
 }

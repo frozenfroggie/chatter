@@ -1,13 +1,13 @@
 <template>
-  <li :class='message.from === "me" ? "messageFromMe" : "message"'>
+  <li :class='message.author._id === user._id ? "messageFromMe" : "message"'>
     <div class='avatarContainer'>
-      <icon name="user-circle" class='avatar' scale="2.5" />
+      <icon name="user-circle" class='avatar' scale="3"/>
     </div>
-    <div :class='["content", message.from === "me" ? "contentRight" : "contentLeft"]'>
-      {{ message.content }}
+    <div :class='["content", message.author._id === user._id ? "contentRight" : "contentLeft"]'>
+      {{ message.messageText }}
     </div>
-    <div :class='["timestamp", message.from === "me" ? "timestampRight" : "timestampLeft"]'>
-      {{ message.timestamp }}
+    <div :class='["timestamp", message.author._id === user._id ? "timestampRight" : "timestampLeft"]'>
+      {{ message.createdAt | toData }}
     </div>
   </li>
 </template>
@@ -16,7 +16,10 @@
 
 export default {
   name: 'Message',
-  props: ['message']
+  props: ['message', 'user'],
+  mounted () {
+    this.$emit('mounted')
+  }
 }
 </script>
 
@@ -37,52 +40,62 @@ export default {
   grid-template-columns: 5px 1fr 1fr 50px;
   grid-template-rows: auto;
   align-items: start;
-  justify-items: start;
+  justify-items: end;
   grid-template-areas:
-    ". content content avatar"
-    ". . timestamp avatar";
+    ". content content"
+    ". . timestamp";
   margin-top: 10px;
 }
+.messageFromMe > .avatarContainer {
+  display: none;
+}
 .avatarContainer {
-  height: 50px;
-  width: 50px;
+  position: relative;
+  height: 38px;
+  width: 38px;
   border-radius: 50%;
   grid-area: avatar;
   justify-self: center;
 }
 .avatar {
-  color: white;
+  color: #353E59;
   opacity: .4;
 }
 .content {
+  word-break: break-all;
+  width: 70%;
   grid-area: content;
-  border: 1px solid white;
   border-radius: 9px;
   font-size: 0.75em;
-  padding: 0px 4px 10px 4px;
+  padding: 5px 4px 20px 6px;
   margin: 10px;
   background-color: white;
   opacity: .8;
   color: black;
   z-index: 1;
+  text-align: left;
+  box-shadow: 0px 0px 10px 1px rgba(0,0,0,0.5);
 }
 .content:before {
   content: '';
   display: block;
   position: relative;
   top: 5px;
-  left: -7px;
   width: 12px;
   height: 12px;
   transform: rotate(45deg);
   background-color: white;
   z-index: -1;
 }
+.contentRight {
+  color: white;
+  background-color: #5082CD;
+}
 .contentLeft:before {
-  left: -8px;
+  left: -10px;
 }
 .contentRight:before {
-  left: 98%;
+  display: none;
 }
 .timestamp {
   grid-area: timestamp;

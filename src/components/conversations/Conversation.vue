@@ -2,18 +2,18 @@
   <div class='conversationLabel' @click='openChat'>
     <div class='avatarContainer'>
       <icon name="user-circle" class='avatar' scale="2.5"></icon>
-      <div :class='{online: conversation.isOnline}'></div>
+      <div :class='{online: true}'></div>
     </div>
     <div class='content'>
       <div class='conversationName'>
-        {{ conversation.name }}
+        {{ conversation.snippet.author.username.charAt(0).toUpperCase() + conversation.snippet.author.username.slice(1)}}
       </div>
       <div class='conversationPreview'>
-        {{ conversation.preview }}
+        {{ conversation.snippet.messageText }}
       </div>
     </div>
     <div class='timestamp'>
-      {{ conversation.lastMessage }}
+      {{ conversation.snippet.createdAt | toShortData }}
     </div>
   </div>
 </template>
@@ -23,8 +23,12 @@ export default {
   props: ['conversation'],
   methods: {
     openChat () {
-      this.$router.push({name: 'chat', params: {friendName: this.conversation.name}})
+      console.log('snippet', this.conversation.snippet)
+      this.$router.push({name: 'chat', params: {conversationId: this.conversation._id}})
     }
+  },
+  created () {
+    console.log(this.conversation)
   }
 }
 </script>
@@ -32,7 +36,7 @@ export default {
 <style scoped>
 .conversationLabel {
   display: grid;
-  grid-template-columns: 0px 50px auto 30px 0px;
+  grid-template-columns: 0px 50px auto 50px 0px;
   grid-template-rows: 80px;
   grid-column-gap: 5px;
   align-items: center;

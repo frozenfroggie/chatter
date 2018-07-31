@@ -2,7 +2,7 @@
   <div class='searchPanelContainer'>
     <div class='searchPanel'>
       <div class='arrowLeftContainer' @click='$router.push("/")'>
-        <icon name="arrow-left" class='arrowLeft'></icon>
+        <icon name="arrow-right" class='arrowLeft'></icon>
       </div>
       <div class='profileName'>
         <div> {{ name }} </div>
@@ -20,7 +20,7 @@ export default {
 
 <style scoped>
 .searchPanelContainer {
-  border-bottom: 1px solid rgba(250,250,250,0.1);
+  box-shadow: 0px 1px 1px 0px rgba(0, 0, 0, .20);
 }
 .searchPanel {
   display: flex;
@@ -33,8 +33,8 @@ export default {
   display: flex;
   position: relative;
   top: 1px;
-  color: white;
-  opacity: .9;
+  color: #071727;
+  font-weight: 500;
   font-size: 1.1em;
 }
 input {
@@ -63,8 +63,7 @@ input::placeholder {
   margin-right: 10px;
 }
 .arrowLeft {
-  color: white;
-  opacity: .3;
+  color: #B4C2D4;
 }
 .arrowLeft:hover {
   cursor: pointer;

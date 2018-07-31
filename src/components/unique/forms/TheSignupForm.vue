@@ -8,7 +8,8 @@
         placeholder="Username"
         aria-label="Username"
         id="username"
-        v-model="username"
+        :value="username"
+        @input="(event) => updateSignupForm(event, 'username')"
         @blur="$v.username.$touch()">
     </div>
     <div :class="['email', {invalid: $v.email.$error && email !== ''}]">
@@ -19,7 +20,8 @@
         placeholder="Email"
         aria-label="Email"
         id="email"
-        v-model="email"
+        :value="email"
+        @input="(event) => updateSignupForm(event, 'email')"
         @blur="$v.email.$touch()">
     </div>
     <div :class="['password', {invalid: $v.password.$error && password !== ''}]">
@@ -30,7 +32,8 @@
         placeholder="Password"
         aria-label="Password"
         id="password"
-        v-model="password"
+        :value="password"
+        @input="(event) => updateSignupForm(event, 'password')"
         @blur='$v.password.$touch()'>
     </div>
     <div :class="['confirmPassword', {invalid: $v.confirmPassword.$error && confirmPassword !== ''}]">
@@ -41,7 +44,8 @@
         placeholder="Retype Password"
         aria-label="Retype password"
         id="confirmPassword"
-        v-model="confirmPassword"
+        :value="confirmPassword"
+        @input="(event) => updateSignupForm(event, 'confirmPassword')"
         @blur='$v.confirmPassword.$touch()'>
     </div>
   </div>
@@ -51,12 +55,23 @@
 import { required, email, minLength, sameAs } from 'vuelidate/lib/validators'
 
 export default {
-  data () {
-    return {
-      username: '',
-      email: '',
-      password: '',
-      confirmPassword: ''
+  computed: {
+    username () {
+      return this.$store.getters.signupForm.username
+    },
+    email () {
+      return this.$store.getters.signupForm.email
+    },
+    password () {
+      return this.$store.getters.signupForm.password
+    },
+    confirmPassword () {
+      return this.$store.getters.signupForm.confirmPassword
+    }
+  },
+  methods: {
+    updateSignupForm (event, name) {
+      this.$store.dispatch('updateSignupForm', {name, value: event.target.value})
     }
   },
   validations: {

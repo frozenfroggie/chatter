@@ -1,7 +1,7 @@
 <template>
   <div class="friends">
     <search-panel placeholder='Type name'/>
-    <friends-list :friends='friends'/>
+    <friends-list :friends='friends' :conversations='conversations'/>
   </div>
 </template>
 
@@ -10,18 +10,12 @@ import SearchPanel from './shared/SearchPanel.vue'
 import FriendsList from './friends/FriendsList.vue'
 
 export default {
-  data () {
-    return {
-      friends: [{
-        name: 'Christianna Lynn',
-        isOnline: true
-      }, {
-        name: 'June Aline',
-        isOnline: false
-      }, {
-        name: 'Will Tricky',
-        isOnline: false
-      }]
+  computed: {
+    friends () {
+      return this.$store.getters.user.friends
+    },
+    conversations () {
+      return this.$store.getters.conversations
     }
   },
   components: {

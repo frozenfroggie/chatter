@@ -23,7 +23,7 @@
   transition: opacity 0.4s;
 }
 .router-link-active {
-  border-left: 3px solid rgb(66, 183, 42);
+  border-left: 3px solid #5082CD;
   opacity: 1;
 }
 </style>

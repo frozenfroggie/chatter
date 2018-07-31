@@ -26,7 +26,7 @@ export default new Router({
       }
     },
     {
-      path: '/chat/:friendName',
+      path: '/chat/:conversationId',
       name: 'chat',
       components: {
         default: AppConversations,

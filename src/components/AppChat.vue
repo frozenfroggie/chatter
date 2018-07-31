@@ -1,40 +1,44 @@
 <template>
-  <div class="chat">
-    <profile-panel :name='name'/>
-    <messages-list :messages='messages'/>
+  <div class="chat" id='chat'>
+    <profile-panel :name='friend.username'/>
+    <messages-list :messages='messages' :user='user'/>
+    <message-input @sendMessage="sendMessage"/>
   </div>
 </template>
 
 <script>
+import { mapActions, mapGetters } from 'vuex'
 import ProfilePanel from './chat/ProfilePanel.vue'
 import MessagesList from './chat/MessagesList.vue'
+import MessageInput from './chat/MessageInput.vue'
 
 export default {
-  data () {
-    return {
-      name: 'Christianna Lynn',
-      messages: [{
-        from: 'me',
-        content: 'Hi, whats goin on? I have terrible time in Sweden. Heva you been there? I will send you some photos leter. Text me if you have time',
-        timestamp: '30 JANUARY 17:30'
-      }, {
-        from: 'Christianna Lynn',
-        content: 'Lorem ipsum dolor sit amet, sed odio voluptaria eu. Tollit populo definiebas cum ut, eos graece causae cu. Convenire prodesset argumentum vix ut, ne mel mutat noster. Eam at veri facilisi menandri.',
-        timestamp: '30 FEBRUARY 12:30'
-      }, {
-        from: 'Christianna Lynn',
-        content: 'Pri ut nusquam democritum, homero facilisi duo ex. Erroribus sententiae et usu, graecis appetere consulatu no pri, ea vix omnes dolorum. Pro at mundi theophrastus, eu latine debitis sea, quem fierent vis eu. Eu sed vivendo assentior, est veri ornatus legimus ut.',
-        timestamp: '5 APRIL 14:18'
-      }, {
-        from: 'Christianna Lynn',
-        content: 'Pri ut nusquam democritum, homero facilisi duo ex. Erroribus sententiae et usu, graecis appetere consulatu no pri, ea vix omnes dolorum. Pro at mundi theophrastus, eu latine debitis sea, quem fierent vis eu. Eu sed vivendo assentior, est veri ornatus legimus ut.',
-        timestamp: '5 APRIL 14:18'
-      }]
-    }
-  },
   components: {
     ProfilePanel,
-    MessagesList
+    MessagesList,
+    MessageInput
+  },
+  computed: {
+    ...mapGetters(['user', 'messages', 'conversations']),
+    friend () {
+      const conversation = this.conversations.find(conversation => conversation._id === this.$route.params.conversationId)
+      const friend = conversation.participants.find(participant => this.user._id !== participant._id)
+      return friend
+    }
+  },
+  methods: {
+    ...mapActions(['socketSendMessage', 'scrollToBottom']),
+    sendMessage (messageText) {
+      console.log('chat!!!', this.user)
+      this.socketSendMessage({
+        author: this.user,
+        recipent: this.friend,
+        conversationId: this.$route.params.conversationId,
+        messageText
+      }).then(() => {
+        this.scrollToBottom()
+      })
+    }
   }
 }
 </script>
@@ -42,6 +46,8 @@ export default {
 <style scoped>
 .chat {
   grid-area: content;
+  background-color: #F4F8FD;
+  box-shadow: 0px 1px 1px 0px rgba(0, 0, 0, .5);
 }
 @media only screen and (min-width: 720px) {
   .chat {

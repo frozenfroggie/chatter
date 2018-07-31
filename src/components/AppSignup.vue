@@ -7,7 +7,7 @@
 
     <the-signup-form />
 
-    <button type="button" name="" class='loginBtn' @click='$emit("signup")'> SIGN UP </button>
+    <button type="button" name="" class='loginBtn' @click="signup"> SIGN UP </button>
 
     <div class='signin' @click='$router.push("/")'> Already have an account? <span> Sign in </span> </div>
 
@@ -15,6 +15,7 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex'
 import TheLogo from './unique/TheLogo.vue'
 import TheSignupForm from './unique/forms/TheSignupForm.vue'
 
@@ -22,6 +23,9 @@ export default {
   components: {
     TheLogo,
     TheSignupForm
+  },
+  methods: {
+    ...mapActions(['signup'])
   }
 }
 </script>

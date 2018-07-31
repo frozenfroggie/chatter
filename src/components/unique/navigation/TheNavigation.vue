@@ -5,7 +5,7 @@
     <nav-btn-friends/>
     <nav-btn-add-friends/>
     <nav-btn-settings/>
-    <nav-btn-logout v-on:logout='$emit("logout")'/>
+    <nav-btn-logout v-on:logout='logout'/>
   </div>
 </template>
 
@@ -25,6 +25,12 @@ export default {
     NavBtnAddFriends,
     NavBtnSettings,
     NavBtnLogout
+  },
+  methods: {
+    logout () {
+      this.$store.dispatch('logout')
+      this.$router.push('/')
+    }
   }
 }
 </script>
@@ -48,7 +54,7 @@ export default {
       "addFriends"
       "settings"
       "logout";
-    background-color: rgb(38, 49, 66);
+    background-color: #2A384A;
     z-index: 10;
     box-shadow: 0px 6px 20px 0px rgba(0,0,0,0.7);
   }

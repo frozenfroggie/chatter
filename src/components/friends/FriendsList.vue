@@ -3,6 +3,7 @@
     <friend
       v-for='(friend, idx) in friends'
       :friend='friend'
+      :conversations='conversations'
       :key='idx'/>
   </ul>
 </template>
@@ -11,7 +12,7 @@
 import Friend from './Friend.vue'
 
 export default {
-  props: ['friends'],
+  props: ['friends', 'conversations'],
   components: {
     Friend
   }
@@ -22,5 +23,6 @@ export default {
 .conversationsList {
   display: flex;
   flex-direction: column;
+  padding: 0px;
 }
 </style>

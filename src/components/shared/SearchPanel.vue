@@ -1,7 +1,11 @@
 <template>
   <div class='searchPanelContainer'>
     <div class='searchPanel'>
-      <input :placeholder="placeholder" type='text' autofocus/>
+      <input
+        type='text'
+        autofocus
+        :placeholder="placeholder"
+        @input="$emit('inputChange', $event.target.value)"/>
     </div>
   </div>
 </template>

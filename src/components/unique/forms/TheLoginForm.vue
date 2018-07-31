@@ -7,7 +7,8 @@
         name="username"
         placeholder="Username"
         aria-label="Username"
-        v-model="username">
+        :value="username"
+        @input="(event) => updateLoginForm(event, 'username')">
     </div>
     <div class="password">
       <icon name="unlock" scale="1"></icon>
@@ -16,7 +17,8 @@
         name="password"
         placeholder="Password"
         aria-label="Password"
-        v-model="password">
+        :value="password"
+        @input="(event) => updateLoginForm(event, 'password')">
     </div>
   </div>
 </template>
@@ -24,10 +26,17 @@
 <script>
 
 export default {
-  data () {
-    return {
-      username: '',
-      password: ''
+  computed: {
+    username () {
+      return this.$store.getters.loginForm.username
+    },
+    password () {
+      return this.$store.getters.loginForm.password
+    }
+  },
+  methods: {
+    updateLoginForm (event, name) {
+      this.$store.dispatch('updateLoginForm', {name, value: event.target.value})
     }
   }
 }
