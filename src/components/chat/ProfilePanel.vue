@@ -5,8 +5,8 @@
         <icon name="arrow-right" class='arrowLeft'></icon>
       </div>
       <div class='profileName'>
-        <div> {{ name }} </div>
-        <div :class='{online: true}'></div>
+        <div> {{ name.charAt(0).toUpperCase() + name.slice(1) }} </div>
+        <div :class='{online: isOnline}'></div>
       </div>
     </div>
   </div>
@@ -14,13 +14,15 @@
 
 <script>
 export default {
-  props: ['name']
+  props: ['name', 'isOnline']
 }
 </script>
 
 <style scoped>
 .searchPanelContainer {
   box-shadow: 0px 1px 1px 0px rgba(0, 0, 0, .20);
+  background: linear-gradient(90deg, #c33460, #9a189c);
+  z-index: 12;
 }
 .searchPanel {
   display: flex;
@@ -33,7 +35,7 @@ export default {
   display: flex;
   position: relative;
   top: 1px;
-  color: #071727;
+  color: white;
   font-weight: 500;
   font-size: 1.1em;
 }
@@ -63,7 +65,7 @@ input::placeholder {
   margin-right: 10px;
 }
 .arrowLeft {
-  color: #B4C2D4;
+  color: white;
 }
 .arrowLeft:hover {
   cursor: pointer;

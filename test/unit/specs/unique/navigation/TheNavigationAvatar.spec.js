@@ -1,4 +1,4 @@
-import { shallowMount, mount, RouterLinkStub } from '@vue/test-utils'
+import { shallowMount, mount } from '@vue/test-utils'
 import TheNavigationAvatar from '@/components/unique/navigation/TheNavigationAvatar'
 
 describe('TheNavigationAvatar', () => {

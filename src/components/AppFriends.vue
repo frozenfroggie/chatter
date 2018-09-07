@@ -15,7 +15,7 @@ export default {
       return this.$store.getters.user.friends
     },
     conversations () {
-      return this.$store.getters.conversations
+      return this.$store.getters.getConversations.conversations
     }
   },
   components: {

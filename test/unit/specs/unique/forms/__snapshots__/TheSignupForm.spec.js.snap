@@ -1,0 +1,22 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`TheSignupForm matches snapshot 1`] = `
+<div class="inputContainer">
+    <div class="username">
+        <!---->
+        <input type="text" name="username" placeholder="Username" aria-label="Username" id="username">
+    </div>
+    <div class="email">
+        <!---->
+        <input type="text" name="email" placeholder="Email" aria-label="Email" id="email">
+    </div>
+    <div class="password">
+        <!---->
+        <input type="password" name="password" placeholder="Password" aria-label="Password" id="password">
+    </div>
+    <div class="confirmPassword">
+        <!---->
+        <input type="password" name="password" placeholder="Retype Password" aria-label="Retype password" id="confirmPassword">
+    </div>
+</div>
+`;

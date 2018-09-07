@@ -16,11 +16,21 @@ Vue.component('icon', Icon)
 Vue.use(Vuelidate)
 
 Vue.filter('toData', function (value) {
-  return moment(value).format('MMMM Do HH:MM')
+  return moment(value).calendar()
 })
 
 Vue.filter('toShortData', function (value) {
   return moment(value).format('D MMMM')
+})
+
+Vue.filter('toHour', function (value) {
+  return moment(value).format('HH:mm')
+})
+
+Vue.filter('deleteNbsp', function (value) {
+  if (value) {
+    return value.replace(/&nbsp;/gi, ' ')
+  }
 })
 
 /* eslint-disable no-new */

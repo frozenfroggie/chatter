@@ -4,18 +4,18 @@ exports[`Conversation matches snapshot 1`] = `
 <div class="conversationLabel">
     <div class="avatarContainer">
         <!---->
-        <div class="online"></div>
+        <div class=""></div>
     </div>
     <div class="content">
         <div class="conversationName">
-            Christianna Lynn
+            Ewelina
         </div>
         <div class="conversationPreview">
-            Hello, amazing work...
+            vvvc
         </div>
     </div>
     <div class="timestamp">
-        12:53
+        4 September
     </div>
 </div>
 `;
