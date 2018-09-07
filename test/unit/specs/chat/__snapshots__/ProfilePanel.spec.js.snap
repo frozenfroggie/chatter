@@ -8,7 +8,7 @@ exports[`ProfilePanel matches snapshot 1`] = `
         </div>
         <div class="profileName">
             <div> Christianna Lynn </div>
-            <div class="online"></div>
+            <div class=""></div>
         </div>
     </div>
 </div>

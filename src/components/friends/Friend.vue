@@ -7,7 +7,7 @@
       tag='div'>
       <div class='avatarContainer'>
         <icon name="user-circle" class='avatar' scale="2.5"></icon>
-        <div :class='{online: true}'></div>
+        <div :class='{online: isOnline}'></div>
       </div>
       <div class='content'>
         <div class='friendName'>
@@ -23,19 +23,33 @@ export default {
   props: ['friend', 'conversations'],
   methods: {
     openChat () {
-      this.$store.dispatch('getMessages', this.conversationId)
+      this.$store.dispatch('getMessages', {
+        conversationId: this.conversationId,
+        skipMessagesAmount: 0
+      })
       this.$router.push('/chat/' + this.conversationId)
     }
   },
   computed: {
     conversationId () {
       let conversationId
-      this.conversations.forEach(conversationOne => {
-        conversationId = this.friend.conversations.find(conversation => {
-          return conversationOne._id === conversation
+      this.conversations && this.conversations.forEach(myConversation => {
+        this.friend.conversations.forEach(friendConversationId => {
+          if (myConversation._id === friendConversationId) {
+            conversationId = myConversation._id
+          }
         })
       })
       return conversationId
+    },
+    isOnline () {
+      const activeConversationsIds = this.$store.getters.activeConversationsIds
+      if (!activeConversationsIds) {
+        return false
+      }
+      for (let i = 0; i < activeConversationsIds.length; i++) {
+        return activeConversationsIds[i] === this.conversationId
+      }
     }
   }
 }

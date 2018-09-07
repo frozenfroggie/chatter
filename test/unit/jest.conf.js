@@ -5,7 +5,7 @@ module.exports = {
   moduleFileExtensions: [
     'js',
     'json',
-    'vue'
+    'vue',''
   ],
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/src/$1'
@@ -16,6 +16,9 @@ module.exports = {
   },
   testPathIgnorePatterns: [
     '<rootDir>/test/e2e'
+  ],
+  transformIgnorePatterns: [
+  "node_modules/(?!(vue-awesome)/)"
   ],
   snapshotSerializers: ['<rootDir>/node_modules/jest-serializer-vue'],
   setupFiles: ['<rootDir>/test/unit/setup'],

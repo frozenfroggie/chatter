@@ -1,28 +1,19 @@
 import { shallowMount } from '@vue/test-utils'
 import Message from '@/components/chat/Message.vue'
+import { user, messages } from '../../seed'
+const messagesFromFriend = messages['5b785a77c4e908471c1bb547']
 
 describe('Message', () => {
   it('renders message content and message timestamp in proper divs when props.message passed', () => {
-    const message = {
-      from: 'me',
-      content: 'Hi, whats goin on? I have terrible time in Sweden. Heva you been there? I will send you some photos leter. Text me if you have time',
-      timestamp: '30 JANUARY 17:30'
-    }
     const wrapper = shallowMount(Message, {
-      propsData: { message },
+      propsData: { message: messagesFromFriend[0], user },
       stubs: ['Icon']
     })
-    expect(wrapper.find('div.content').text()).toBe(message.content)
-    expect(wrapper.find('div.timestamp').text()).toBe(message.timestamp)
+    expect(wrapper.find('div.content').text()).toBe(messagesFromFriend[0].messageText)
   })
   it('matches snapshot', () => {
-    const message = {
-      from: 'Christianna Lynn',
-      content: 'Lorem ipsum dolor sit amet, sed odio voluptaria eu. Tollit populo definiebas cum ut, eos graece causae cu. Convenire prodesset argumentum vix ut, ne mel mutat noster. Eam at veri facilisi menandri.',
-      timestamp: '30 FEBRUARY 12:30'
-    }
     const wrapper = shallowMount(Message, {
-      propsData: { message },
+      propsData: { message: messagesFromFriend[0], user },
       stubs: ['Icon']
     })
     expect(wrapper.html()).toMatchSnapshot()

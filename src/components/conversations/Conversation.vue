@@ -1,15 +1,15 @@
 <template>
-  <div class='conversationLabel' @click='openChat'>
+  <div class='conversationLabel' @click='openChat' :style='[$route.params.conversationId === conversation._id && {"background-color": "#2A384A"}]'>
     <div class='avatarContainer'>
       <icon name="user-circle" class='avatar' scale="2.5"></icon>
-      <div :class='{online: true}'></div>
+      <div :class='{online: isOnline}'></div>
     </div>
     <div class='content'>
       <div class='conversationName'>
         {{ conversation.snippet.author.username.charAt(0).toUpperCase() + conversation.snippet.author.username.slice(1)}}
       </div>
       <div class='conversationPreview'>
-        {{ conversation.snippet.messageText }}
+        {{ conversation.snippet.messageText | deleteNbsp }}
       </div>
     </div>
     <div class='timestamp'>
@@ -23,12 +23,23 @@ export default {
   props: ['conversation'],
   methods: {
     openChat () {
-      console.log('snippet', this.conversation.snippet)
+      this.$store.dispatch('getMessages', {
+        conversationId: this.conversation._id,
+        skipMessagesAmount: 0
+      })
       this.$router.push({name: 'chat', params: {conversationId: this.conversation._id}})
     }
   },
-  created () {
-    console.log(this.conversation)
+  computed: {
+    isOnline () {
+      const activeConversationsIds = this.$store.getters.activeConversationsIds
+      if (!activeConversationsIds) {
+        return false
+      }
+      for (let i = 0; i < activeConversationsIds.length; i++) {
+        return activeConversationsIds[i] === this.conversation._id
+      }
+    }
   }
 }
 </script>
@@ -36,7 +47,7 @@ export default {
 <style scoped>
 .conversationLabel {
   display: grid;
-  grid-template-columns: 0px 50px auto 50px 0px;
+  grid-template-columns: 0px 50px auto 70px 0px;
   grid-template-rows: 80px;
   grid-column-gap: 5px;
   align-items: center;

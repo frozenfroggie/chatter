@@ -16,7 +16,7 @@ export default {
   },
   watch: {
     '$route' (to, from) {
-      if (to.params.friendName) {
+      if (to.params.conversationId) {
         this.isActive = true
       } else {
         this.isActive = false
@@ -42,7 +42,7 @@ export default {
   transition: opacity 0.4s;
 }
 .router-link-active {
-  border-left: 3px solid #5082CD;
+  border-left: 4px solid #9a189c;
   opacity: 1;
 }
 </style>

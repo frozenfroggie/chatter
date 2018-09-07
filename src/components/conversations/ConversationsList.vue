@@ -2,6 +2,7 @@
   <div class='conversationsList'>
     <conversation
       v-for='(conversation, idx) in conversations'
+      v-if='conversation.snippet'
       :conversation='conversation'
       :key='idx'/>
   </div>

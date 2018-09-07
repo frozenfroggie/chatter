@@ -1,0 +1,14 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`TheLoginForm matches snapshot 1`] = `
+<div class="inputContainer">
+    <div class="username">
+        <!---->
+        <input type="text" name="username" placeholder="Username" aria-label="Username">
+    </div>
+    <div class="password">
+        <!---->
+        <input type="password" name="password" placeholder="Password" aria-label="Password">
+    </div>
+</div>
+`;

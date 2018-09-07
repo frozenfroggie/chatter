@@ -47,19 +47,22 @@
 
 <script>
 import { mapGetters, mapActions } from 'vuex'
-// import moment from 'moment'
 import TheNavigation from './components/unique/navigation/TheNavigation.vue'
+import TheResizer from './components/unique/TheResizer'
+import { eventBus } from './eventBus.js'
 
 export default {
   name: 'App',
   components: {
-    TheNavigation
+    TheNavigation,
+    TheResizer
   },
   data () {
     return {
       floatingActionBtn: true,
       shouldShowConversations: true,
-      shouldShowChat: false
+      shouldShowChat: false,
+      stopTypingTimer: null
     }
   },
   beforeMount () {
@@ -67,33 +70,24 @@ export default {
     script.type = 'text/javascript'
     script.src = 'https://chatter-server.herokuapp.com/socket.io/socket.io.js'
     document.getElementsByTagName('head')[0].appendChild(script)
-    script.addEventListener('load', () => {
-      this.socketConnect('https://chatter-server.herokuapp.com')
-      this.socket.on('connect', () => {
-        console.log('Connected to server')
-      })
-      this.socket.on('newMessage', newMessage => {
-        console.log('New message', newMessage)
-        this.saveNewMessage(newMessage).then(() => {
-          this.scrollToBottom()
-        })
-      })
-      this.socket.on('disconnect', () => {
-        console.log('Disconnected from server')
-      })
-    })
+    script.onload = () => {
+      this.connect()
+    }
   },
   mounted () {
+    if (this.$route.params.conversationId) {
+      this.floatingActionBtn = false
+    }
     if (window.innerWidth > 720) {
       this.shouldShowChat = true
     }
     window.addEventListener('resize', this.handleResizing)
   },
   computed: {
-    ...mapGetters(['authenticated', 'friends', 'socket'])
+    ...mapGetters(['authenticated', 'friends', 'socket', 'user', 'isTyping', 'conversations'])
   },
   methods: {
-    ...mapActions(['socketConnect', 'socketCustomEvent', 'saveNewMessage', 'getConversations', 'scrollToBottom']),
+    ...mapActions(['socketConnect', 'socketCustomEvent', 'saveNewMessage', 'getConversations', 'updateStatus', 'leaveConversation', 'typingNotification']),
     handleResizing () {
       if (window.innerWidth > 720) {
         this.shouldShowChat = true
@@ -103,11 +97,46 @@ export default {
       } else if (this.shouldShowChat) {
         this.shouldShowConversations = false
       }
+    },
+    connect () {
+      this.socketConnect('https://chatter-server.herokuapp.com')
+      this.socket.on('connect', () => {
+        console.log('Connected to server!')
+      })
+      this.socket.on('typingNotification', () => {
+        if (!this.isTyping) {
+          this.typingNotification()
+          this.stopTypingTimer = setTimeout(() => {
+            this.typingNotification()
+          }, 1000)
+        } else if (this.stopTypingTimer) {
+          clearTimeout(this.stopTypingTimer)
+          this.stopTypingTimer = setTimeout(() => {
+            this.typingNotification()
+          }, 1000)
+        }
+      })
+      this.socket.on('newMessage', newMessage => {
+        const messageNotificationSound = new Audio('/static/stairs.mp3')
+        messageNotificationSound.play()
+        if (this.isTyping) {
+          clearTimeout(this.stopTypingTimer)
+          this.typingNotification()
+        }
+        this.saveNewMessage(newMessage).then(() => {
+          eventBus.percentScroll(100)
+        })
+      })
+      this.socket.on('enterConversation', data => {
+        this.updateStatus(data)
+      })
+      this.socket.on('leaveConversation', data => {
+        this.leaveConversation(data)
+      })
     }
   },
   watch: {
     '$route' (to, from) {
-      console.log(to)
       if (to.path === '/') {
         this.floatingActionBtn = true
         this.shouldShowChat = false
@@ -127,20 +156,7 @@ export default {
     },
     authenticated (isAuthenticated) {
       if (isAuthenticated) {
-        this.getConversations()
-        // this.friends.forEach(friend => {
-        //   this.socketCustomEvent({
-        //     eventName: 'enterConversation',
-        //     data: friend.conversationId
-        //   })
-        // })
-      } else {
-        // this.friends.forEach(friend => {
-        //   this.socketCustomEvent({
-        //     eventName: 'leaveConversation',
-        //     data: friend.conversationId
-        //   })
-        // })
+        this.getConversations({user: this.user})
       }
     }
   }
@@ -149,16 +165,28 @@ export default {
 
 <style>
 .fadeInUp {
-  -webkit-animation: fadeInUp .5s; /* Safari 4+ */
-  -moz-animation:    fadeInUp .5s; /* Fx 5+ */
-  -o-animation:      fadeInUp .5s; /* Opera 12+ */
-  animation:         fadeInUp .5s; /* IE 10+, Fx 29+ */
+  -webkit-animation: fadeInUp .4s;
+  -moz-animation:    fadeInUp .4s;
+  -o-animation:      fadeInUp .4s;
+  animation:         fadeInUp .4s;
 }
 .fadeOutUp {
-  -webkit-animation: fadeOutUp .5s; /* Safari 4+ */
-  -moz-animation:    fadeOutUp .5s; /* Fx 5+ */
-  -o-animation:      fadeOutUp .5s; /* Opera 12+ */
-  animation:         fadeOutUp .5s; /* IE 10+, Fx 29+ */
+  -webkit-animation: fadeOutUp .4s;
+  -moz-animation:    fadeOutUp .4s;
+  -o-animation:      fadeOutUp .4s;
+  animation:         fadeOutUp .4s;
+}
+.fadeInRight {
+  -webkit-animation: fadeInRight .2s;
+  -moz-animation:    fadeInRight .2s;
+  -o-animation:      fadeInRight .2s;
+  animation:         fadeInRight .2s;
+}
+.fadeOutRight {
+  -webkit-animation: fadeOutRight .3s;
+  -moz-animation:    fadeOutRight .3s;
+  -o-animation:      fadeOutRight .3s;
+  animation:         fadeOutRight .3s;
 }
 *:focus {
   outline: none;
@@ -206,12 +234,14 @@ input:-webkit-autofill:active {
   right: 5%;
   width: 45px;
   height: 45px;
-  background-color: #5082CD;
+  background: linear-gradient(90deg, #c33460, #9a189c);
   border-radius: 50%;
   box-shadow: 3px 3px 18px 0px rgba(0,0,0,0.75);
+  z-index: 0;
 }
 .floatingActionBtn:hover {
   cursor: pointer;
+  background: linear-gradient(180deg, #c33460, #9a189c);
   box-shadow: 3px 3px 18px 1px rgba(0,0,0,0.75);
 }
 .floatingActionBtn:hover > .plus {
@@ -225,7 +255,7 @@ input:-webkit-autofill:active {
 }
 @media only screen and (min-width: 720px) {
   .app {
-    grid-template-columns: 46px 2fr 3fr;
+    grid-template-columns: 46px minmax(354px, max-content) auto;
     grid-template-areas: '. content helper';
   }
 }

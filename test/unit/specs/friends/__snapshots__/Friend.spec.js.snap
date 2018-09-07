@@ -1,14 +1,16 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Friend matches snapshot 1`] = `
-<li class="conversationLabel">
-    <div class="avatarContainer">
-        <!---->
-        <div class="online"></div>
-    </div>
-    <div class="content">
-        <div class="friendName">
-            Christianna Lynn
+<li>
+    <div to="[object Object]" tag="div" class="conversationLabel">
+        <div class="avatarContainer">
+            <!---->
+            <div class=""></div>
+        </div>
+        <div class="content">
+            <div class="friendName">
+                Ewelina
+            </div>
         </div>
     </div>
 </li>

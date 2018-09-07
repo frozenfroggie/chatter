@@ -15,12 +15,20 @@
   },
   "dependencies": {
     "axios": "^0.18.0",
+    "circular-json": "^0.5.5",
+    "emoji-mart-vue": "^2.6.4",
+    "emoji-vue": "^0.2.3",
+    "emojione": "^3.1.7",
+    "lodash": "^4.17.10",
     "moment": "^2.22.1",
+    "socket.io-stream": "^0.9.1",
     "vue": "^2.5.2",
     "vue-awesome": "^3.0.0",
     "vue-router": "^3.0.1",
     "vuelidate": "^0.6.2",
-    "vuex": "^3.0.1"
+    "vuex": "^3.0.1",
+    "vuex-persist": "^1.4.3",
+    "webrtc-adapter": "^6.3.2"
   },
   "devDependencies": {
     "@vue/test-utils": "^1.0.0-beta.16",
@@ -57,7 +65,10 @@
     "friendly-errors-webpack-plugin": "^1.6.1",
     "html-webpack-plugin": "^2.30.1",
     "jest": "^22.4.4",
+    "jest-localstorage-mock": "^2.2.0",
     "jest-serializer-vue": "^0.3.0",
+    "jest-svg-transformer": "^1.0.0",
+    "mock-vue-router": "^0.1.3",
     "node-notifier": "^5.1.2",
     "optimize-css-assets-webpack-plugin": "^3.2.0",
     "ora": "^1.2.0",

@@ -28,6 +28,7 @@ export default {
   },
   methods: {
     logout () {
+      // window.localStorage.clear()
       this.$store.dispatch('logout')
       this.$router.push('/')
     }
@@ -55,7 +56,7 @@ export default {
       "settings"
       "logout";
     background-color: #2A384A;
-    z-index: 10;
+    z-index: 15;
     box-shadow: 0px 6px 20px 0px rgba(0,0,0,0.7);
   }
 </style>
