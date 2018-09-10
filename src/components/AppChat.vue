@@ -58,22 +58,16 @@ export default {
   computed: {
     ...mapGetters(['isVideoChatStarted', 'user', 'messages', 'messagesPending', 'activeConversationsIds', 'isTyping']),
     conversations () {
-      console.log('getConversations.conversations', this.$store.getters.getConversations.conversations)
       return this.$store.getters.getConversations.conversations
     },
     friend () {
-      console.log('conversation', this.conversations)
       const conversation = this.conversations && this.conversations.find(conversation => {
         return conversation._id === this.$route.params.conversationId
       })
-      console.log('conversation', conversation)
       const friendId = conversation && conversation.participants.find(participantId => this.user._id !== participantId)
-      console.log('friendId', friendId)
       const friend = this.user.friends.find(friend => {
-        console.log(friend)
         return friend._id === friendId
       })
-      console.log('friend', friend)
       return friend
     },
     isOnline () {
@@ -110,7 +104,6 @@ export default {
     },
     getMessages () {
       if (!this.messages.hasOwnProperty(this.$route.params.conversationId) && !this.messagesPending) {
-        console.log('GET MESSAGES')
         this.$store.dispatch('getMessages', {
           conversationId: this.$route.params.conversationId,
           skipMessagesAmount: 0

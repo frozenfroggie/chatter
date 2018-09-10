@@ -21,12 +21,13 @@ beforeEach(() => {
    getConversations: () => getConversations,
    user: () => user,
    messages: () => messagesFromFriend,
+   messagesPending: () => false,
    activeConversationsIds: () => [],
-   isVideoChatStarted: () => false,
-   messagesPending: () => false
+   isVideoChatStarted: () => false
  },
  actions = {
-   turnOnResizer: jest.fn()
+   turnOnResizer: jest.fn(),
+   getMessages: jest.fn()
  },
  store = new Vuex.Store({ getters, actions })
 })
