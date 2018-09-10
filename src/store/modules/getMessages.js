@@ -3,12 +3,14 @@ import axiosAuth from '../../config/axiosAuth'
 const state = {
   pending: false,
   error: false,
-  messages: {}
+  messages: {},
+  endOfConversation: {}
 }
 
 const getters = {
   messages: state => state.messages,
-  messagesPending: state => state.pending
+  messagesPending: state => state.pending,
+  endOfConversation: state => state.endOfConversation
 }
 
 const mutations = {
@@ -21,12 +23,17 @@ const mutations = {
   getMessagesSuccess: (state, payload) => {
     state.pending = false
     if (state.messages[payload.conversationId]) {
-      state.messages[payload.conversationId] = payload.messages.concat(state.messages[payload.conversationId])
+      if (payload.messages.length === 0) {
+        state.endOfConversation = Object.assign({}, state.endOfConversation, { [payload.conversationId]: true })
+      } else {
+        state.messages[payload.conversationId] = payload.messages.concat(state.messages[payload.conversationId])
+      }
     } else {
       state.messages = {...state.messages, [payload.conversationId]: payload.messages}
     }
   },
   getMessagesError: (state, payload) => {
+    console.log('ee', payload)
     state.error = payload
     state.pending = false
   }

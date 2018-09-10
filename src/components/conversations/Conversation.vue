@@ -19,15 +19,22 @@
 </template>
 
 <script>
+import { eventBus } from '../../eventBus.js'
+
 export default {
   props: ['conversation'],
   methods: {
     openChat () {
-      this.$store.dispatch('getMessages', {
-        conversationId: this.conversation._id,
-        skipMessagesAmount: 0
-      })
       this.$router.push({name: 'chat', params: {conversationId: this.conversation._id}})
+      // console.log(this.messages)
+      // if (!this.messages.hasOwnProperty(this.conversation._id)) {
+      //   console.log('GET MESSAGES')
+      //   this.$store.dispatch('getMessages', {
+      //     conversationId: this.conversation._id,
+      //     skipMessagesAmount: 0
+      //   })
+      // }
+      eventBus.percentScroll(this.$route.params.conversationId, 100)
     }
   },
   computed: {
@@ -39,6 +46,9 @@ export default {
       for (let i = 0; i < activeConversationsIds.length; i++) {
         return activeConversationsIds[i] === this.conversation._id
       }
+    },
+    messages () {
+      return this.$store.getters.messages
     }
   }
 }

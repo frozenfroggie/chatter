@@ -14,10 +14,13 @@ const mutations = {
     state.isDragged = !state.isDragged
   },
   changeResizerPosition: (state, payload) => {
-    if (payload < 400) {
-      state.resizerPositionX = 400
-    } else if (payload > 750) {
-      state.resizerPositionX = 750
+    // console.log(payload)
+    if (payload < 350) {
+      state.resizerPositionX = 350
+    } else if (payload > (window.innerWidth * 0.7)) {
+      state.resizerPositionX = window.innerWidth * 0.7
+    } else if (payload < (window.innerWidth * 0.3)) {
+      state.resizerPositionX = window.innerWidth * 0.3
     } else {
       state.resizerPositionX = payload
     }
@@ -43,6 +46,9 @@ const actions = {
   },
   handleMouseMove: ({commit, state}, payload) => {
     state.isDragged && commit('changeResizerPosition', payload.clientX)
+  },
+  manualChangeResizerPosition: ({commit, state}, payload) => {
+    commit('changeResizerPosition', payload)
   },
   turnOnResizer: ({commit, state}, payload) => {
     !state.resizerTurned && commit('toogleResizerTurned')

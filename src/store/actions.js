@@ -21,14 +21,5 @@ export default {
   },
   closeEmojiPanel: ({commit}, payload) => {
     commit('setEmojiPanel', false)
-  },
-  showVideoChatPrompt: ({commit}) => {
-    commit('showVideoChatPrompt')
-  },
-  videoChatStart: ({commit}) => {
-    commit('videoChatStart')
-  },
-  videoChatHangup: ({commit}) => {
-    commit('videoChatHangup')
   }
 }

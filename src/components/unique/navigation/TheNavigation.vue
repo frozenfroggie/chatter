@@ -38,11 +38,10 @@ export default {
 
 <style scoped>
   .navigation {
-    position: fixed;
+    position: absolute;
     top: 0px;
     left: 0px;
-    bottom: 0px;
-    width: 46px;
+    height: 101vh;
     display: grid;
     grid-template-columns: auto;
     grid-template-rows: 2fr 1fr 1fr 1fr 1fr 3fr;

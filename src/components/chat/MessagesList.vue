@@ -1,16 +1,21 @@
 <template>
-  <ul class='messagesList' id='messagesList'>
+  <ul class='messagesList' :id='"messagesList" + $route.params.conversationId'>
     <component-loader v-if='messagesPending' color='#9a189c'/>
     <message
       v-for='(message, idx) in conversationMessages'
       :lastMessage = 'idx === lastMessageIdx'
       :timestamp = 'conversationMessages[idx - 1] && conversationMessages[idx - 1].createdAt'
+      :shouldShowPrompt = 'shouldShowPrompt'
+      :shouldShowCalling = 'shouldShowCalling'
       :key='message._id'
       :message='message'
       :user='user'
       @mounted='messageMounted'/>
-    <video-chat-call
-      v-if='videoChatCalling'
+    <video-chat-prompt
+      v-if='shouldShowPrompt'
+      :name='name'/>
+    <video-chat-calling
+      v-if='shouldShowCalling'
       :name='name'/>
     <typing-notification
       v-if='isTyping'
@@ -22,7 +27,8 @@
 <script>
 import ComponentLoader from '../shared/ComponentLoader.vue'
 import TypingNotification from './TypingNotification.vue'
-import VideoChatCall from './VideoChatCall.vue'
+import VideoChatPrompt from './VideoChatPrompt.vue'
+import VideoChatCalling from './VideoChatCalling.vue'
 import Message from './Message.vue'
 import { eventBus } from '../../eventBus.js'
 import throttle from 'lodash/throttle'
@@ -40,13 +46,14 @@ export default {
     Message,
     TypingNotification,
     ComponentLoader,
-    VideoChatCall
+    VideoChatPrompt,
+    VideoChatCalling
   },
   mounted () {
-    const messagesList = document.getElementById('messagesList')
+    const messagesList = document.getElementById('messagesList' + this.$route.params.conversationId)
     messagesList && messagesList.addEventListener('scroll', throttle((event) => {
-      const scrollHeight = document.getElementById('messagesList').scrollHeight
-      if (event.target.scrollTop < scrollHeight * 0.05) {
+      const scrollHeight = messagesList.scrollHeight
+      if (event.target.scrollTop < scrollHeight * 0.1 && this.conversationMessages && !this.endOfConversation) {
         this.$store.dispatch('getMessages', {
           conversationId: this.$route.params.conversationId,
           skipMessagesAmount: this.conversationMessages.length
@@ -66,22 +73,28 @@ export default {
     messageMounted () {
       this.mountedMessages++
       if (this.notification && this.mountedMessages === this.conversationMessages.length + 1) {
-        eventBus.percentScroll(100)
+        eventBus.percentScroll(this.$route.params.conversationId, 100)
       } else if (this.mountedMessages === this.conversationMessages.length && !this.initialScrollToBottom) {
         this.initialScrollToBottom = true
-        eventBus.percentScroll(100)
+        eventBus.percentScroll(this.$route.params.conversationId, 100)
       } else if (this.mountedMessages === this.conversationMessages.length && this.initialScrollToBottom) {
-        eventBus.percentScroll(100)
+        eventBus.percentScroll(this.$route.params.conversationId, 100)
       }
-      eventBus.percentScroll(100)
     }
   },
   computed: {
     isTyping () {
       return this.$store.getters.isTyping
     },
-    videoChatCalling () {
-      return this.$store.getters.videoChatCalling
+    shouldShowPrompt () {
+      return this.$store.getters.videoChatShowPrompt
+    },
+    shouldShowCalling () {
+      return this.$store.getters.videoChatShowCalling
+    },
+    endOfConversation () {
+      console.log(this.$store.getters.endOfConversation)
+      return this.$store.getters.endOfConversation[this.$route.params.conversationId]
     },
     conversationMessages () {
       return this.messages[this.$route.params.conversationId]
@@ -105,5 +118,9 @@ export default {
   margin-bottom: 50px;
   overflow: auto;
   padding-left: 5px;
+}
+.endOfConversation {
+  font-size: 0.8em;
+  padding: 10px;
 }
 </style>

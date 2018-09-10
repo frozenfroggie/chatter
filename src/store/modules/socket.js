@@ -48,6 +48,10 @@ const actions = {
   videoChatAnswer: ({commit, state, dispatch}, payload) => {
     state.socket.emit('videoChatAnswer', payload)
     dispatch('videoChatStart')
+  },
+  videoChatDecline: ({commit, state, dispatch}, payload) => {
+    state.socket.emit('videoChatDecline', payload)
+    dispatch('videoChatHangup')
   }
 }
 

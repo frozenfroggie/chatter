@@ -27,19 +27,5 @@ export default {
   },
   setEmojiPanel: (state, payload) => {
     state.emojiPanel = payload
-  },
-  showVideoChatPrompt: (state) => {
-    state.videoChat.isCalling = true
-    state.videoChat.hangup = false
-  },
-  videoChatStart: (state) => {
-    state.videoChat.isCalling = false
-    state.videoChat.isStarted = true
-    state.videoChat.hangup = false
-  },
-  videoChatHangup: (state) => {
-    state.videoChat.isCalling = false
-    state.videoChat.isStarted = false
-    state.videoChat.hangup = true
   }
 }

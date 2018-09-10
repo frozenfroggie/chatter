@@ -2,13 +2,14 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import VuexPersistence from 'vuex-persist'
 
-import forms from './modules/forms'
 import conversations from './modules/conversations'
 import getMessages from './modules/getMessages'
 import searchUsers from './modules/searchUsers'
-import socket from './modules/socket'
-import user from './modules/user'
+import videoChat from './modules/videoChat'
 import resizer from './modules/resizer'
+import socket from './modules/socket'
+import forms from './modules/forms'
+import user from './modules/user'
 
 import mutations from './mutations'
 import getters from './getters'
@@ -19,7 +20,7 @@ Vue.use(Vuex)
 const vuexLocal = new VuexPersistence({
   storage: window.localStorage,
   supportCircular: true,
-  modules: ['user', 'tokens', 'conversations']
+  modules: ['user', 'tokens']
 })
 
 export const store = new Vuex.Store({
@@ -42,24 +43,20 @@ export const store = new Vuex.Store({
       success: false,
       error: false
     },
-    isTyping: false,
-    videoChat: {
-      isCalling: false,
-      isStarted: false,
-      hangup: false
-    }
+    isTyping: false
   },
   getters,
   mutations,
   actions,
   modules: {
-    forms,
     conversations,
     getMessages,
     searchUsers,
+    videoChat,
+    resizer,
     socket,
-    user,
-    resizer
+    forms,
+    user
   },
   plugins: [vuexLocal.plugin]
 })
