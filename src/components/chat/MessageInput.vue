@@ -32,8 +32,10 @@ import emojione from 'emojione'
 import ss from 'socket.io-stream'
 import TextArea from './TextArea'
 
-const pcConfig = {
-  'iceServers': [{
+// RTCPeerConnection Options
+let server = {
+  // Uses Google's STUN server
+  iceServers: [{
     'urls': 'stun:stun.l.google.com:19302'
   }]
 };
@@ -63,9 +65,6 @@ export default {
     TextArea
   },
   mounted () {
-    if (location.hostname !== 'localhost') {
-      requestTurn('https://computeengineondemand.appspot.com/turn?username=41784574&key=4080218913')
-    }
     this.localVideo = document.querySelector('#localVideo')
     this.remoteVideo = document.querySelector('#remoteVideo')
     this.socket.on('videoChatCall', () => {
@@ -77,6 +76,9 @@ export default {
       console.log('START VIDEO CHAT')
       this.videoChatStart()
       this.gotLocalStream()
+    })
+    this.socket.on('videoChatDecline', () => {
+      console.log('DECLINE!')
     })
     this.socket.on('videoChatSessionDescription', sessionDescription => {
       console.log('sessionDescription', sessionDescription)
@@ -116,7 +118,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['videoChatStart', 'videoChatHangup', 'showVideoChatPrompt', 'addEmojiMessage', 'removeMessage', 'setSendMessageIntention', 'openEmojiPanel', 'closeEmojiPanel']),
+    ...mapActions(['videoChatStart', 'videoChatHangup', 'showVideoChatPrompt', 'showVideoChatCalling', 'addEmojiMessage', 'removeMessage', 'setSendMessageIntention', 'openEmojiPanel', 'closeEmojiPanel']),
     showEmojiPanel (ev) {
       ev.stopPropagation()
       this.openEmojiPanel()
@@ -148,6 +150,7 @@ export default {
     },
     videoChatCall () {
       this.socket.emit('videoChatCall', this.conversationId)
+      this.showVideoChatCalling()
       this.isInitiator = true
     },
     gotLocalStream () {
@@ -185,7 +188,10 @@ export default {
     },
     createPeerConnection () {
       try {
-        this.pc = new RTCPeerConnection(null)
+        if (location.hostname === 'localhost') {
+          server = null
+        }
+        this.pc = new RTCPeerConnection(server)
         this.pc.onicecandidate = this.handleIceCandidate
         this.pc.onaddstream = this.handleRemoteStreamAdded
         this.pc.onremovestream = this.handleRemoteStreamRemoved
@@ -230,34 +236,6 @@ export default {
     onCreateSessionDescriptionError (error) {
       console.log('Failed to create session description: ' + error.toString())
     },
-    requestTurn (turnURL) {
-      let turnExists = false;
-      for (var i in pcConfig.iceServers) {
-        if (pcConfig.iceServers[i].urls.substr(0, 5) === 'turn:') {
-          turnExists = true;
-          this.turnReady = true;
-          break;
-        }
-      }
-      if (!turnExists) {
-        console.log('Getting TURN server from ', turnURL)
-        // No TURN server. Get one from computeengineondemand.appspot.com:
-        var xhr = new XMLHttpRequest();
-        xhr.onreadystatechange = function() {
-          if (xhr.readyState === 4 && xhr.status === 200) {
-            var turnServer = JSON.parse(xhr.responseText)
-            console.log('Got TURN server: ', turnServer)
-            pcConfig.iceServers.push({
-              'urls': 'turn:' + turnServer.username + '@' + turnServer.turn,
-              'credential': turnServer.password
-            });
-            this.turnReady = true
-          }
-        };
-        xhr.open('GET', turnURL, true)
-        xhr.send()
-      }
-    },
     handleRemoteStreamAdded(event) {
       console.log('Remote stream added.');
       this.remoteStream = event.stream
@@ -276,7 +254,7 @@ export default {
       this.stop()
     },
     stop () {
-      this.tracks.forEach(track => {
+      this.tracks && this.tracks.forEach(track => {
         track.stop()
       })
       this.remoteStream = null

@@ -1,7 +1,7 @@
 <template>
   <div class="chat" id='chat' @mousemove='handleMouseMove' @mouseup='handleMouseUp' @click='closeEmojiPanel'>
     <the-resizer />
-    <profile-panel :name='friend.username' :isOnline='isOnline'/>
+    <profile-panel :name='friend && friend.username' :isOnline='isOnline'/>
     <div v-show='isVideoChatStarted' class="videoChat">
       <video id="remoteVideo" class="remoteVideo" autoplay>
       </video>
@@ -14,7 +14,7 @@
         </div>
       </div>
     </div>
-    <messages-list :messages='messages' :messagesPending='messagesPending' :user='user' :name='friend.username'/>
+    <messages-list :messages='messages' :messagesPending='messagesPending' :user='user' :name='friend && friend.username'/>
     <message-input @sendMessage="sendMessage"/>
   </div>
 </template>
@@ -39,9 +39,15 @@ export default {
   },
   data () {
     return {
-      localVideoWidth: 200,
-      minimized: false
+      localVideoWidth: 100,
+      minimized: true
     }
+  },
+  mounted () {
+    this.getMessages()
+  },
+  updated () {
+    this.getMessages()
   },
   created () {
     this.turnOnResizer()
@@ -52,14 +58,22 @@ export default {
   computed: {
     ...mapGetters(['isVideoChatStarted', 'user', 'messages', 'messagesPending', 'activeConversationsIds', 'isTyping']),
     conversations () {
+      console.log('getConversations.conversations', this.$store.getters.getConversations.conversations)
       return this.$store.getters.getConversations.conversations
     },
     friend () {
+      console.log('conversation', this.conversations)
       const conversation = this.conversations && this.conversations.find(conversation => {
         return conversation._id === this.$route.params.conversationId
       })
-      const friendId = conversation.participants.find(participantId => this.user._id !== participantId)
-      const friend = this.user.friends.find(friend => friend._id === friendId)
+      console.log('conversation', conversation)
+      const friendId = conversation && conversation.participants.find(participantId => this.user._id !== participantId)
+      console.log('friendId', friendId)
+      const friend = this.user.friends.find(friend => {
+        console.log(friend)
+        return friend._id === friendId
+      })
+      console.log('friend', friend)
       return friend
     },
     isOnline () {
@@ -92,6 +106,15 @@ export default {
       } else {
         this.localVideoWidth = 100
         this.minimized = true
+      }
+    },
+    getMessages () {
+      if (!this.messages.hasOwnProperty(this.$route.params.conversationId) && !this.messagesPending) {
+        console.log('GET MESSAGES')
+        this.$store.dispatch('getMessages', {
+          conversationId: this.$route.params.conversationId,
+          skipMessagesAmount: 0
+        })
       }
     }
   }

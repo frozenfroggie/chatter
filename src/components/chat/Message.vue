@@ -1,14 +1,14 @@
 <template>
-  <li :class='message.author._id === user._id ? "messageFromMe" : "message"'>
+  <li :class='[message.author._id === user._id ? "messageFromMe" : "message", lastMessage && !shouldShowPrompt && !shouldShowCalling && "lastMessage"]'>
     <div v-if='timestampDiff > 900'
       :class='["timestamp", message.author._id === user._id ? "timestampRight" : "timestampLeft"]'>
       {{ message.createdAt | toData }}
     </div>
-    <div v-if='lastMessage' class='avatarContainer'>
+    <div v-if='lastMessage && !shouldShowPrompt && !shouldShowCalling' class='avatarContainer'>
       <icon name="user-circle" class='avatar' scale="3"/>
     </div>
     <div @mouseover="showTooltip" @mouseout="hideTooltip"
-      :class='["content", message.author._id === user._id ? "contentRight" : "contentLeft", lastMessage && "lastMessage"]'>
+      :class='["content", message.author._id === user._id ? "contentRight" : "contentLeft", lastMessage && !shouldShowPrompt && !shouldShowCalling && "lastMessage"]'>
       <span v-html="text"></span>
       <div v-if="shouldShowTooltip"
         :class='["tooltip", message.author._id === user._id ? "tooltipLeft" : "tooltipRight"]'>
@@ -24,7 +24,7 @@ import moment from 'moment'
 
 export default {
   name: 'Message',
-  props: ['message', 'user', 'timestamp', 'lastMessage'],
+  props: ['message', 'user', 'timestamp', 'lastMessage', 'shouldShowPrompt', 'shouldShowCalling'],
   data () {
     return {
       text: null,
@@ -59,29 +59,31 @@ export default {
 </script>
 
 <style scoped>
+li:first-child {
+  padding-top: 5px;
+}
 li:last-child {
-  padding-bottom: 20px;
+  padding-bottom: 5px;
 }
 .message {
   display: grid;
-  grid-template-columns: 0px 40px auto 30px 0px;
+  grid-template-columns: 10px 0px auto 30px 0px;
   grid-template-rows: auto;
-  grid-column-gap: 15px;
   align-items: start;
   justify-items: start;
   grid-template-areas:
-    ". timestamp timestamp . ."
+    "timestamp timestamp timestamp timestamp timestamp"
     ". avatar content tooltip ."
     ". avatar . . .";
 }
 .messageFromMe {
   display: grid;
-  grid-template-columns: 0px 0px auto auto 5px;
+  grid-template-columns: 0px 0px auto auto 10px;
   grid-template-rows: auto;
   align-items: center;
   justify-items: end;
   grid-template-areas:
-    ". . timestamp timestamp ."
+    "timestamp timestamp timestamp timestamp timestamp"
     ". tooltip content content .";
 }
 .messageFromMe > .avatarContainer {
@@ -107,8 +109,8 @@ li:last-child {
   grid-area: content;
   border-radius: 9px;
   font-size: 0.8em;
-  padding: 0px 9px;
-  margin: 1px 5px;
+  padding: 0px 12px;
+  margin: 1.5px 5px;
   background-color: #e9ebee;
   opacity: .8;
   color: black;
@@ -118,14 +120,16 @@ li:last-child {
   justify-content: flex-start;
   align-items: center;
   user-select: text;
-  /* box-shadow: 0px 0px 10px 1px rgba(0,0,0,0.5); */
 }
 @media only screen and (min-width: 720px) {
   .content {
     max-width: 70%;
   }
+  .message {
+    grid-template-columns: 10px 0px auto 30px 0px;
+  }
   .messageFromMe {
-    grid-template-columns: 5px 1fr 1fr 20px;
+    grid-template-columns: 0px 0px auto auto 10px;
   }
 }
 span {
@@ -133,17 +137,21 @@ span {
   justify-content: flex-start;
   align-items: center;
 }
+.lastMessage {
+  grid-template-columns: 0px 40px auto 30px 0px;
+  grid-column-gap: 10px;
+}
 .lastMessage:before {
   content: '';
   display: block;
   position: relative;
   top: 5px;
+  left: -14px;
   width: 12px;
   height: 12px;
   transform: rotate(45deg);
   background-color: #e9ebee;
   z-index: -1;
-  left: -12px;
 }
 .contentRight {
   color: white;

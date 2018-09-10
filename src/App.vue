@@ -75,6 +75,10 @@ export default {
     }
   },
   mounted () {
+    if (this.authenticated) {
+      console.log('GET CONVERSATIONS')
+      this.getConversations({user: this.user})
+    }
     if (this.$route.params.conversationId) {
       this.floatingActionBtn = false
     }
@@ -155,7 +159,9 @@ export default {
       }
     },
     authenticated (isAuthenticated) {
+      console.log(isAuthenticated)
       if (isAuthenticated) {
+        console.log('GET CONVERSATIONS')
         this.getConversations({user: this.user})
       }
     }
@@ -217,7 +223,6 @@ input:-webkit-autofill:active {
 .app {
   display: grid;
   grid-template-columns: 46px auto;
-  grid-template-rows: calc(100% - 46px);
   grid-template-areas: '. content';
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -255,7 +260,7 @@ input:-webkit-autofill:active {
 }
 @media only screen and (min-width: 720px) {
   .app {
-    grid-template-columns: 46px minmax(354px, max-content) auto;
+    grid-template-columns: 46px minmax(304px, max-content) auto;
     grid-template-areas: '. content helper';
   }
 }

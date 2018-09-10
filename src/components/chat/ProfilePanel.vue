@@ -5,7 +5,7 @@
         <icon name="arrow-right" class='arrowLeft'></icon>
       </div>
       <div class='profileName'>
-        <div> {{ name.charAt(0).toUpperCase() + name.slice(1) }} </div>
+        <div> {{ name && name.charAt(0).toUpperCase() + name.slice(1) }} </div>
         <div :class='{online: isOnline}'></div>
       </div>
     </div>

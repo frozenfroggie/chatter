@@ -1,30 +1,36 @@
 <template>
   <li class="message">
     <div class='avatarContainer'>
-      <icon name="user-circle" class='avatar' scale="3"/>
+      <div class='avatar'>
+        <icon name="user-circle" scale="3"/>
+      </div>
     </div>
     <div :class='["content", "contentLeft"]'>
-      <span> {{ name.charAt(0).toUpperCase() + name.slice(1) }} is calling... </span>
-      <div class='allow'>
-        <icon name="phone" scale="1.5" flip="horizontal" @click.native='videoChatAnswer'/>
+      <div class='calling'>
+        <p> Calling to {{ name.charAt(0).toUpperCase() + name.slice(1) }} </p>
       </div>
       <div class='deny'>
-        <icon name="phone" scale="1.5" flip="horizontal" @click.native='videoChatAnswer'/>
+        <icon name="phone" scale="1.4" flip="horizontal" @click.native='videoChatDecline'/>
       </div>
     </div>
   </li>
 </template>
 
 <script>
+import { eventBus } from '../../eventBus.js'
+
 export default {
   data () {
     return {
     }
   },
   props: ['name'],
+  mounted () {
+    eventBus.percentScroll(this.$route.params.conversationId, 100)
+  },
   methods: {
-    videoChatAnswer () {
-      this.$store.dispatch('videoChatAnswer', this.$route.params.conversationId)
+    videoChatDecline () {
+      this.$store.dispatch('videoChatDecline', this.$route.params.conversationId)
     }
   }
 }
@@ -36,23 +42,25 @@ li:last-child {
 }
 .message {
   display: grid;
-  grid-template-columns: 0px 40px auto 30px 0px;
+  grid-template-columns: 0px 40px auto auto 5px;
   grid-template-rows: auto;
   grid-column-gap: 15px;
   align-items: start;
   justify-items: start;
   grid-template-areas:
     ". timestamp timestamp . ."
-    ". avatar content tooltip ."
+    ". avatar content content ."
     ". avatar . . .";
 }
 .avatarContainer {
   position: relative;
-  height: 38px;
-  width: 38px;
+  height: 100%;
+  width: auto;
   border-radius: 50%;
   grid-area: avatar;
-  justify-self: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 .avatar {
   color: #c1c3c9;
@@ -67,7 +75,7 @@ li:last-child {
   border-radius: 9px;
   font-size: 0.8em;
   padding: 0px 9px;
-  margin: 1px 5px;
+  margin: 5px 5px;
   background-color: #e9ebee;
   opacity: .8;
   color: black;
@@ -78,14 +86,6 @@ li:last-child {
   align-items: center;
   user-select: text;
   /* box-shadow: 0px 0px 10px 1px rgba(0,0,0,0.5); */
-}
-@media only screen and (min-width: 720px) {
-  .content {
-    max-width: 70%;
-  }
-  .messageFromMe {
-    grid-template-columns: 5px 1fr 1fr 20px;
-  }
 }
 span {
   display: flex;
@@ -106,35 +106,32 @@ span {
 .contentLeft:before {
   left: -12px;
 }
-.allow {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  position: relative;
-  margin: 0px 5px 0px 10px;
-  border-radius: 50%;
-  width: 45px;
-  height: 45px;
-  color: white;
-  background-color: green;
-}
-.allow:hover {
-  cursor: pointer;
-}
 .deny {
   display: flex;
   justify-content: center;
   align-items: center;
   position: relative;
-  margin: 10px 2px 10px 2px;
+  margin: 10px 2px 10px 7px;
   border-radius: 50%;
-  width: 45px;
-  height: 45px;
+  width: 35px;
+  height: 35px;
   color: white;
   background-color: red;
   transform: rotate(135deg);
 }
 .deny:hover {
   cursor: pointer;
+}
+@media only screen and (min-width: 720px) {
+  .content {
+    max-width: 70%;
+  }
+  .messageFromMe {
+    grid-template-columns: 5px 1fr 1fr 20px;
+  }
+  .deny {
+    width: 45px;
+    height: 45px;
+  }
 }
 </style>

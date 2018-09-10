@@ -11,7 +11,12 @@ import { mapActions } from 'vuex'
 
 export default {
   methods: {
-    ...mapActions(['handleMouseUp', 'handleMouseDown', 'handleMouseMove'])
+    ...mapActions(['handleMouseUp', 'handleMouseDown', 'handleMouseMove', 'manualChangeResizerPosition'])
+  },
+  mounted () {
+    if (window.innerWidth > 720) {
+      this.manualChangeResizerPosition(window.innerWidth / 2 - 46)
+    }
   },
   computed: {
     isDragged () {
