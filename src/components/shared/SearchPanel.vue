@@ -3,7 +3,6 @@
     <div class='searchPanel'>
       <input
         type='text'
-        autofocus
         :placeholder="placeholder"
         @input="$emit('inputChange', $event.target.value)"/>
     </div>
