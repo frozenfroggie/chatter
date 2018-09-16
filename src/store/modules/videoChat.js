@@ -32,6 +32,9 @@ const mutations = {
     state.shouldShowCalling = false
     state.isStarted = false
     state.hangup = true
+  },
+  hideVideoChatCalling: (state) => {
+    state.shouldShowCalling = false
   }
 }
 
@@ -47,6 +50,9 @@ const actions = {
   },
   videoChatHangup: ({commit}) => {
     commit('videoChatHangup')
+  },
+  hideVideoChatCalling: ({commit}) => {
+    commit('hideVideoChatCalling')
   }
 }
 

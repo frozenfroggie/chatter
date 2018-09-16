@@ -70,7 +70,6 @@ export default {
     this.socket.on('videoChatCall', () => {
       console.log('show video chat prompt')
       this.showVideoChatPrompt()
-      this.maybeStart()
     })
     this.socket.on('videoChatAnswer', () => {
       console.log('START VIDEO CHAT')
@@ -118,7 +117,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['videoChatStart', 'videoChatHangup', 'showVideoChatPrompt', 'showVideoChatCalling', 'addEmojiMessage', 'removeMessage', 'setSendMessageIntention', 'openEmojiPanel', 'closeEmojiPanel']),
+    ...mapActions(['videoChatStart', 'videoChatHangup', 'showVideoChatPrompt', 'hideVideoChatCalling', 'showVideoChatCalling', 'addEmojiMessage', 'removeMessage', 'setSendMessageIntention', 'openEmojiPanel', 'closeEmojiPanel']),
     showEmojiPanel (ev) {
       ev.stopPropagation()
       this.openEmojiPanel()
@@ -149,36 +148,48 @@ export default {
       blobStream.pipe(stream);
     },
     videoChatCall () {
-      this.socket.emit('videoChatCall', this.conversationId)
       this.showVideoChatCalling()
+      this.gotLocalStream()
       this.isInitiator = true
     },
     gotLocalStream () {
-      console.log('gotLocalStream')
-      if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-        console.log('WebRTC supported!')
-        navigator.mediaDevices.getUserMedia({
-          audio: true,
-          video: true
-        }).then(stream => {
-          console.log('Adding local stream.')
-          this.tracks = stream.getTracks()
-          this.localStream = stream
-          this.localVideo.srcObject = stream
-          if (this.isInitiator) {
-            this.maybeStart()
-          }
-        }).catch(err => {
-          console.log('Local stream err', err)
-        })
-      }
+      return new Promise((resolve, reject) => {
+        if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+          console.log('WebRTC supported!')
+          navigator.mediaDevices.getUserMedia({
+            audio: true,
+            video: true
+          }).then(stream => {
+            console.log('Adding local stream.')
+            this.tracks = stream.getTracks()
+            this.localStream = stream
+            this.localVideo.srcObject = stream
+            if (this.isInitiator) {
+              this.socket.emit('videoChatCall', this.conversationId)
+            }
+            resolve()
+            // if (this.isInitiator) {
+            //   this.maybeStart()
+            // }
+          }).catch(err => {
+            console.log('Local stream err', err)
+            if (this.isInitiator) {
+              this.hideVideoChatCalling()
+            }
+            // if (this.isInitiator) {
+            //   this.maybeStart()
+            // }
+            reject()
+          })
+        }
+      })
     },
     maybeStart () {
       console.log('>>>>>>> maybeStart() ', this.isStarted, this.localStream)
       if (!this.isStarted && typeof this.localStream !== 'undefined') {
         console.log('>>>>>> creating peer connection', this.localStream)
         this.createPeerConnection()
-        this.pc.addStream(this.localStream)
+        this.localStream && this.pc.addStream(this.localStream)
         this.isStarted = true
         console.log('isInitiator',this.isInitiator)
         if (this.isInitiator) {
@@ -268,7 +279,11 @@ export default {
   watch: {
     isVideoChatStarted (isStarted) {
       if (isStarted) {
-        this.gotLocalStream()
+        this.gotLocalStream().then(() => {
+          this.maybeStart()
+        }).catch((err) => {
+          console.log(err)
+        })
       }
     },
     isVideoChatHangup (hangup) {
