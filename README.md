@@ -1,6 +1,6 @@
 # Chatter
 
-Chatter is a real-time WebSocket chat app. Frontend developed using Vue & Vuex for state menagment.
+Chatter is a real-time WebSocket chat app. Frontend developed using Vue, Vuex for state management. IBM Watson Assistant API used for interaction with bot account, you can write with AI!
 
 Backend in separate repository: https://github.com/frozenfroggie/chatter-api.
 
