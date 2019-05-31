@@ -123,7 +123,6 @@ export default {
         }
       })
       this.socket.on('newMessage', newMessage => {
-        console.log('newMessage!!!', newMessage)
         const messageNotificationSound = new Audio('/static/stairs.mp3')
         messageNotificationSound.play()
         if (this.isTyping) {
@@ -162,9 +161,7 @@ export default {
       }
     },
     authenticated (isAuthenticated) {
-      console.log(isAuthenticated)
       if (isAuthenticated) {
-        console.log('GET CONVERSATIONS')
         this.getConversations({user: this.user})
       }
     }

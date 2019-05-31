@@ -18,7 +18,7 @@
       {{ errorMessage }}
     </div>
 
-    <div class='signup' @click='$router.push("/signup")'>
+    <div class='signup' @click='signup'>
       Don't have an account? <span> Sign up </span>
     </div>
 
@@ -50,7 +50,11 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['login'])
+    ...mapActions(['login']),
+    signup () {
+      // $router.push("/signup")
+      alert('Sorry, app in development, you can login as guest (login: Guest, password: guest123)')
+    }
   }
 }
 </script>
