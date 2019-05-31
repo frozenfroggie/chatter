@@ -14,7 +14,7 @@
         </div>
       </div>
     </div>
-    <messages-list :messages='messages' :messagesPending='messagesPending' :user='user' :name='friend && friend.username'/>
+    <messages-list @sendMessage="sendMessage" :messages='messages' :messagesPending='messagesPending' :user='user' :name='friend && friend.username'/>
     <message-input @sendMessage="sendMessage"/>
   </div>
 </template>

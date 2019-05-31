@@ -21,5 +21,8 @@ export default {
   },
   closeEmojiPanel: ({commit}, payload) => {
     commit('setEmojiPanel', false)
+  },
+  resetState: ({commit}, payload) => {
+    commit('resetState')
   }
 }

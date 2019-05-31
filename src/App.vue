@@ -69,6 +69,7 @@ export default {
     const script = document.createElement('script')
     script.type = 'text/javascript'
     script.src = 'https://chatter-server.herokuapp.com/socket.io/socket.io.js'
+    // script.src = 'http://localhost:5000/socket.io/socket.io.js'
     document.getElementsByTagName('head')[0].appendChild(script)
     script.onload = () => {
       this.connect()
@@ -104,6 +105,7 @@ export default {
     },
     connect () {
       this.socketConnect('https://chatter-server.herokuapp.com')
+      // this.socketConnect('http://localhost:5000')
       this.socket.on('connect', () => {
         console.log('Connected to server!')
       })
@@ -121,6 +123,7 @@ export default {
         }
       })
       this.socket.on('newMessage', newMessage => {
+        console.log('newMessage!!!', newMessage)
         const messageNotificationSound = new Audio('/static/stairs.mp3')
         messageNotificationSound.play()
         if (this.isTyping) {

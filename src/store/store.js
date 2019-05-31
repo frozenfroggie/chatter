@@ -23,27 +23,33 @@ const vuexLocal = new VuexPersistence({
   modules: ['user', 'tokens']
 })
 
+export const getDefaultState = () => ({
+  tokens: {
+    accessToken: null,
+    refreshToken: null,
+    verificationToken: {
+      send: false,
+      confirmed: false
+    }
+  },
+  messageText: '',
+  addEmoji: '',
+  emojiPanel: false,
+  sendMessage: {
+    intention: false,
+    pending: false,
+    success: false,
+    error: false
+  },
+  isTyping: false
+})
+
+const state = getDefaultState()
+
 export const store = new Vuex.Store({
   state: {
-    socket: null,
-    tokens: {
-      accessToken: null,
-      refreshToken: null,
-      verificationToken: {
-        send: false,
-        confirmed: false
-      }
-    },
-    messageText: '',
-    addEmoji: '',
-    emojiPanel: false,
-    sendMessage: {
-      intention: false,
-      pending: false,
-      success: false,
-      error: false
-    },
-    isTyping: false
+    ...state,
+    socket: null
   },
   getters,
   mutations,

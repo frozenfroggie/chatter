@@ -2,6 +2,7 @@ import axios from 'axios'
 
 const instance = axios.create({
   baseURL: 'https://chatter-server.herokuapp.com'
+  // baseURL: 'http://localhost:5000'
 })
 
 try {

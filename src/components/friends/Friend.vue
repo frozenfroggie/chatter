@@ -19,8 +19,22 @@
 </template>
 
 <script>
+import axiosAuth from '../../config/axiosAuth'
+
 export default {
   props: ['friend', 'conversations'],
+  data () {
+    return {
+      conversationId: undefined
+    }
+  },
+  mounted () {
+    axiosAuth.get('/chat/conversationId/' + this.friend._id).then(res => {
+      this.conversationId = res.data.conversationId
+    }).catch(() => {
+      // ignore
+    })
+  },
   methods: {
     openChat () {
       this.$store.dispatch('getMessages', {
@@ -31,17 +45,6 @@ export default {
     }
   },
   computed: {
-    conversationId () {
-      let conversationId
-      this.conversations && this.conversations.forEach(myConversation => {
-        this.friend.conversations.forEach(friendConversationId => {
-          if (myConversation._id === friendConversationId) {
-            conversationId = myConversation._id
-          }
-        })
-      })
-      return conversationId
-    },
     isOnline () {
       const activeConversationsIds = this.$store.getters.activeConversationsIds
       if (!activeConversationsIds) {

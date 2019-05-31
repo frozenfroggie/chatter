@@ -8,8 +8,16 @@
       <icon name="user-circle" class='avatar' scale="3"/>
     </div>
     <div @mouseover="showTooltip" @mouseout="hideTooltip"
-      :class='["content", message.author._id === user._id ? "contentRight" : "contentLeft", lastMessage && !shouldShowPrompt && !shouldShowCalling && "lastMessage"]'>
-      <span v-html="text"></span>
+      :class='[message.source || message.options ? "content-img" :  "content", message.author._id === user._id ? "contentRight" : "contentLeft", !message.options && lastMessage && !shouldShowPrompt && !shouldShowCalling && "lastMessage"]'>
+      <ul class="options" v-if="message.options && message.options.length > 0">
+        <li class="option" @click="sendMessage(option.value.input.text)" v-for='option in message.options' :key="option.value.input.text">
+          {{
+            option.label
+          }}
+        </li>
+      </ul>
+      <img v-if="message.source" :src="message.source" width="450"/>
+      <span v-if="message.messageText" v-html="text"></span>
       <div v-if="shouldShowTooltip"
         :class='["tooltip", message.author._id === user._id ? "tooltipLeft" : "tooltipRight"]'>
         {{ message.createdAt | toHour }}
@@ -24,7 +32,7 @@ import moment from 'moment'
 
 export default {
   name: 'Message',
-  props: ['message', 'user', 'timestamp', 'lastMessage', 'shouldShowPrompt', 'shouldShowCalling'],
+  props: ['messageId', 'message', 'user', 'timestamp', 'lastMessage', 'shouldShowPrompt', 'shouldShowCalling'],
   data () {
     return {
       text: null,
@@ -33,7 +41,10 @@ export default {
     }
   },
   beforeMount () {
+    console.log(this.message)
+    // if (!this.message.source && (!this.message.options || !this.message.options.length > 0)) {
     this.text = emojione.unicodeToImage('<p>' + this.message.messageText + '</p>')
+    // }
   },
   mounted () {
     const prevTimestamp = moment(this.timestamp)
@@ -53,6 +64,10 @@ export default {
     },
     hideTooltip (e) {
       this.shouldShowTooltip = false
+    },
+    sendMessage (optionValue) {
+      console.log(optionValue)
+      this.$emit('sendMessage', optionValue)
     }
   }
 }
@@ -89,6 +104,28 @@ li:last-child {
 .messageFromMe > .avatarContainer {
   display: none;
 }
+.options {
+  padding: 0px;
+}
+.option {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 50px;
+  width: 100%;
+  border: 1px solid #9a189c;
+  margin: 5px 0px;
+  border-radius: 5px;
+  padding: 0px 5px !important;
+  background-color: white;
+  color: #9a189c;
+  transition: all 0.2s;
+}
+.option:hover {
+  cursor: pointer;
+  background-color: #9a189c;
+  color: white;
+}
 .avatarContainer {
   position: relative;
   height: 38px;
@@ -100,6 +137,23 @@ li:last-child {
 .avatar {
   color: #c1c3c9;
   opacity: .4;
+}
+.content-img {
+  position: relative;
+  grid-area: content;
+  border-radius: 9px;
+  font-size: 0.8em;
+  margin: 1.5px 5px;
+  color: black;
+  z-index: 1;
+  text-align: left;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  user-select: text;
+}
+.content-img img {
+  border-radius: 5px;
 }
 .content {
   position: relative;

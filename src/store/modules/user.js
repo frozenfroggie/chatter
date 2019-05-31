@@ -1,13 +1,15 @@
 import axiosAuth from '../../config/axiosAuth'
 
-const state = {
+const getDefaultState = () => ({
   authenticated: false,
   user: {
     username: null,
     email: null,
     friends: []
   }
-}
+})
+
+const state = getDefaultState()
 
 const getters = {
   user: state => state.user,
@@ -20,7 +22,7 @@ const mutations = {
     state.user = payload
   },
   logout: (state) => {
-    state.authenticated = false
+    Object.assign(state, getDefaultState())
   },
   addFriendSuccess: (state, payload) => {
     state.user = payload
