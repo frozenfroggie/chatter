@@ -6,7 +6,7 @@
     </div>
     <div class='content'>
       <div class='conversationName'>
-        {{ conversation.snippet.author.username.charAt(0).toUpperCase() + conversation.snippet.author.username.slice(1)}}
+        {{ conversation.snippet.author.username && conversation.snippet.author.username.charAt(0).toUpperCase() + conversation.snippet.author.username.slice(1)}}
       </div>
       <div class='conversationPreview'>
         {{ conversation.snippet.messageText | deleteNbsp }}
@@ -26,19 +26,20 @@ export default {
   methods: {
     openChat () {
       this.$router.push({name: 'chat', params: {conversationId: this.conversation._id}})
-      // console.log(this.messages)
-      // if (!this.messages.hasOwnProperty(this.conversation._id)) {
-      //   console.log('GET MESSAGES')
-      //   this.$store.dispatch('getMessages', {
-      //     conversationId: this.conversation._id,
-      //     skipMessagesAmount: 0
-      //   })
-      // }
+      if (!this.messages.hasOwnProperty(this.conversation._id)) {
+        this.$store.dispatch('getMessages', {
+          conversationId: this.conversation._id,
+          skipMessagesAmount: 0
+        })
+      }
       eventBus.percentScroll(this.$route.params.conversationId, 100)
     }
   },
   computed: {
     isOnline () {
+      if (this.conversation.participants[0] === '5cebee370ce06d0004cfa086' || this.conversation.participants[1] === '5cebee370ce06d0004cfa086') {
+        return true
+      }
       const activeConversationsIds = this.$store.getters.activeConversationsIds
       if (!activeConversationsIds) {
         return false

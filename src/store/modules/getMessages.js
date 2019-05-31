@@ -15,7 +15,11 @@ const getters = {
 
 const mutations = {
   newMessage: (state, payload) => {
-    state.messages[payload.conversationId].push(payload.message)
+    if (!state.messages[payload.conversationId]) {
+      state.messages[payload.conversationId] = []
+    }
+    let messagesCopy = [...state.messages[payload.conversationId], payload.message]
+    state.messages = {...state.messages, [payload.conversationId]: messagesCopy}
   },
   getMessagesPending: (state) => {
     state.pending = true
@@ -33,7 +37,6 @@ const mutations = {
     }
   },
   getMessagesError: (state, payload) => {
-    console.log('ee', payload)
     state.error = payload
     state.pending = false
   }
@@ -51,7 +54,6 @@ const actions = {
         })
       })
       .catch(err => {
-        console.log(err)
         commit('getMessagesError', err)
       })
   }

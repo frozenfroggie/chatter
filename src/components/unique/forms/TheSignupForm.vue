@@ -15,7 +15,7 @@
     <div :class="['email', {invalid: $v.email.$error && email !== ''}]">
       <icon name="envelope" scale="1"></icon>
       <input
-        type="text"
+        type="email"
         name="email"
         placeholder="Email"
         aria-label="Email"

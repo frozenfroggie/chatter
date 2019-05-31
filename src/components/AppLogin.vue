@@ -7,9 +7,16 @@
 
     <the-login-form />
 
-    <button type="button" name="" class='loginBtn' @click='login'>LOG IN</button>
+    <button type="button" name="" class='loginBtn' @click='login'>
+      <icon v-if="!success && !error && pending" name="spinner" scale="1.7" pulse></icon>
+      <span v-else>LOG IN</span>
+    </button>
 
     <div class="forgotPassword"> Forgot password? </div>
+
+    <div class="errorMessage" v-if="error && errorMessage !== ''">
+      {{ errorMessage }}
+    </div>
 
     <div class='signup' @click='$router.push("/signup")'>
       Don't have an account? <span> Sign up </span>
@@ -28,6 +35,20 @@ export default {
     TheLogo,
     TheLoginForm
   },
+  computed: {
+    pending () {
+      return this.$store.getters.loginRequest.pending
+    },
+    error () {
+      return this.$store.getters.loginRequest.error
+    },
+    errorMessage () {
+      return this.$store.getters.loginRequest.errorMessage
+    },
+    success () {
+      return this.$store.getters.loginRequest.success
+    }
+  },
   methods: {
     ...mapActions(['login'])
   }
@@ -44,7 +65,7 @@ export default {
   color: rgba(250,250,250,0.9);
   display: grid;
   grid-template-columns: 2fr 1fr;
-  grid-template-rows: 1fr 120px 50px 50px 50px 80px 2fr 50px;
+  grid-template-rows: 1fr 120px 50px 50px 50px 80px 50px 2fr 50px;
   grid-template-areas:
     ' . . '
     ' logoContainer logoContainer'
@@ -52,6 +73,7 @@ export default {
     ' loginInput loginInput'
     ' loginInput loginInput'
     ' loginBtn forgotPassword'
+    ' errorMessage errorMessage'
     ' . . '
     ' signup signup ';
 }
@@ -71,6 +93,10 @@ export default {
 }
 .loginBtn:hover {
   cursor: pointer;
+}
+.errorMessage {
+  grid-area: errorMessage;
+  color: #e74c3c;
 }
 .forgotPassword {
   width: 100%;
@@ -100,7 +126,7 @@ export default {
 @media only screen and (min-width: 768px) {
   .login {
     grid-template-columns: 1fr 1fr 1fr 1fr;
-    grid-template-rows: 1fr 120px 50px 50px 50px 80px 2fr 50px;
+    grid-template-rows: 1fr 120px 50px 50px 50px 80px 50px 2fr 50px;
     grid-template-areas:
       ' . . . . '
       ' . logoContainer logoContainer .'
@@ -108,6 +134,7 @@ export default {
       ' . loginInput loginInput . '
       ' . loginInput loginInput . '
       ' . loginBtn forgotPassword . '
+      ' . errorMessage errorMessage .'
       ' . . . . '
       ' . signup signup .';
   }

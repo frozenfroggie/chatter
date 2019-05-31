@@ -1,7 +1,7 @@
 <template>
   <div class='chatbox'>
     <div class="buttonsLeft">
-      <icon scale="1.3" class="camera" name="camera"></icon>
+      <icon scale="1.3" class="camera" name="camera" @click.native="handlePhoto"></icon>
       <icon scale="1.3" class="video" name="video" @click.native="videoChatCall"></icon>
       <input type="file" id="fileElem" multiple accept="image/*" style="display:none" @change="handleFiles">
       <label for="fileElem">
@@ -67,48 +67,50 @@ export default {
   mounted () {
     this.localVideo = document.querySelector('#localVideo')
     this.remoteVideo = document.querySelector('#remoteVideo')
-    this.socket.on('videoChatCall', () => {
-      console.log('show video chat prompt')
-      this.showVideoChatPrompt()
-    })
-    this.socket.on('videoChatAnswer', () => {
-      console.log('START VIDEO CHAT')
-      this.videoChatStart()
-      this.gotLocalStream()
-    })
-    this.socket.on('videoChatDecline', () => {
-      console.log('DECLINE!')
-    })
-    this.socket.on('videoChatSessionDescription', sessionDescription => {
-      console.log('sessionDescription', sessionDescription)
-      if (sessionDescription.type === 'offer') {
-        console.log('offer')
-        if (!this.isInitiator && !this.isStarted) {
-          this.maybeStart()
+    if(this.socket) {
+      this.socket.on('videoChatCall', () => {
+        console.log('show video chat prompt')
+        this.showVideoChatPrompt()
+      })
+      this.socket.on('videoChatAnswer', () => {
+        console.log('START VIDEO CHAT')
+        this.videoChatStart()
+        this.gotLocalStream()
+      })
+      this.socket.on('videoChatDecline', () => {
+        console.log('DECLINE!')
+      })
+      this.socket.on('videoChatSessionDescription', sessionDescription => {
+        console.log('sessionDescription', sessionDescription)
+        if (sessionDescription.type === 'offer') {
+          console.log('offer')
+          if (!this.isInitiator && !this.isStarted) {
+            this.maybeStart()
+          }
+          this.pc.setRemoteDescription(new RTCSessionDescription(sessionDescription)).then(() => {
+            this.doAnswer()
+          }).catch(err => {
+            console.log('setRemoteDescriptionErr', err)
+          })
+        } else if (sessionDescription.type === 'answer' && this.isStarted) {
+          console.log('answer')
+          this.pc.setRemoteDescription(new RTCSessionDescription(sessionDescription))
         }
-        this.pc.setRemoteDescription(new RTCSessionDescription(sessionDescription)).then(() => {
-          this.doAnswer()
-        }).catch(err => {
-          console.log('setRemoteDescriptionErr', err)
-        })
-      } else if (sessionDescription.type === 'answer' && this.isStarted) {
-        console.log('answer')
-        this.pc.setRemoteDescription(new RTCSessionDescription(sessionDescription))
-      }
-    })
-    this.socket.on('videoChatCandidate', message => {
-      console.log('videoChatCandidate', message)
-      const candidate = new RTCIceCandidate({
-        sdpMLineIndex: message.label,
-        candidate: message.candidate
-      });
-      this.pc.addIceCandidate(candidate)
-    })
-    this.socket.on('videoChatHangup', () => {
-      console.log('videoChatHangup')
-      this.handleRemoteHangup()
-      this.videoChatHangup()
-    })
+      })
+      this.socket.on('videoChatCandidate', message => {
+        console.log('videoChatCandidate', message)
+        const candidate = new RTCIceCandidate({
+          sdpMLineIndex: message.label,
+          candidate: message.candidate
+        });
+        this.pc.addIceCandidate(candidate)
+      })
+      this.socket.on('videoChatHangup', () => {
+        console.log('videoChatHangup')
+        this.handleRemoteHangup()
+        this.videoChatHangup()
+      })
+    }
   },
   computed: {
     ...mapGetters(['messageText', 'emojiPanel', 'socket', 'isVideoChatStarted', 'isVideoChatHangup']),
@@ -135,17 +137,21 @@ export default {
     sendMessage (localMessage) {
       this.$emit('sendMessage', localMessage)
     },
+    handlePhoto (event) {
+      alert(`Sorry, this feature isn't available right now`);
+    },
     handleFiles (event) {
-      const file = event.target.files[0]
-      const stream = ss.createStream()
-      ss(this.socket).emit('file', stream, {size: file.size})
-      const blobStream = ss.createBlobReadStream(file)
-      let size = 0
-      blobStream.on('data', (chunk) => {
-        size += chunk.length;
-        console.log(Math.floor(size / file.size * 100) + '%');
-      });
-      blobStream.pipe(stream);
+      // const file = event.target.files[0]
+      // const stream = ss.createStream()
+      // ss(this.socket).emit('file', stream, {size: file.size})
+      // const blobStream = ss.createBlobReadStream(file)
+      // let size = 0
+      // blobStream.on('data', (chunk) => {
+      //   size += chunk.length;
+      //   console.log(Math.floor(size / file.size * 100) + '%');
+      // });
+      // blobStream.pipe(stream);
+      alert(`Sorry, this feature isn't available right now`);
     },
     videoChatCall () {
       this.showVideoChatCalling()
@@ -311,6 +317,7 @@ export default {
   background-color: white;
   width: 100%;
   height: 100%;
+  padding: 5px 10px 10px 10px;
 }
 .buttonsLeft {
   display: flex;

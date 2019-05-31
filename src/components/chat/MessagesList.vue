@@ -8,8 +8,10 @@
       :shouldShowPrompt = 'shouldShowPrompt'
       :shouldShowCalling = 'shouldShowCalling'
       :key='message._id'
+      :messageId='message._id'
       :message='message'
       :user='user'
+      @sendMessage="sendMessage"
       @mounted='messageMounted'/>
     <video-chat-prompt
       v-if='shouldShowPrompt'
@@ -62,6 +64,9 @@ export default {
     }, 1000))
   },
   methods: {
+    sendMessage (optionValue) {
+      this.$emit('sendMessage', optionValue)
+    },
     notificationUnmounted () {
       this.notification = false
       this.mountedMessages--
@@ -93,7 +98,6 @@ export default {
       return this.$store.getters.videoChatShowCalling
     },
     endOfConversation () {
-      console.log(this.$store.getters.endOfConversation)
       return this.$store.getters.endOfConversation[this.$route.params.conversationId]
     },
     conversationMessages () {

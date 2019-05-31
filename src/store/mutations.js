@@ -1,3 +1,5 @@
+import { getDefaultState } from './store.js'
+
 export default {
   emailSend: (state) => {
     state.tokens.verificationToken.send = true
@@ -11,6 +13,9 @@ export default {
   },
   removeMessage: (state) => {
     state.messageSend = true
+  },
+  resetState: (state) => {
+    Object.assign(state, getDefaultState())
   },
   sendMessagePending: (state, payload) => {
     state.sendMessage.pending = true
