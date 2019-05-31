@@ -35,8 +35,8 @@ const actions = {
       .then(res => {
         commit('addFriendSuccess', res.data.user)
       })
-      .catch(err => {
-        console.log(err)
+      .catch(() => {
+        // console.log(err)
       })
   }
 }

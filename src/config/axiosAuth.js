@@ -13,7 +13,6 @@ try {
 }
 
 const authorizeInterceptor = instance.interceptors.response.use(res => {
-  console.log('interceptor', res)
   return res
 }, err => {
   const originalRequest = err.config
@@ -21,7 +20,6 @@ const authorizeInterceptor = instance.interceptors.response.use(res => {
     const refreshToken = window.localStorage.getItem('refreshToken')
     return instance.post('/user/refreshTokens', {refreshToken})
       .then(res => {
-        console.log('refresh!')
         const accessToken = res.headers.authorization.split(' ')[1]
         const refreshToken = res.data.refreshToken
         window.sessionStorage.setItem('accessToken', accessToken)

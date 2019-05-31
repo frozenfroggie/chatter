@@ -73,8 +73,7 @@ const actions = {
         commit('requestSuccess', {requestType: 'signupRequest'})
         commit('emailSend')
       })
-      .catch(err => {
-        console.log('err', err.response.data)
+      .catch(() => {
         commit('requestError', {requestType: 'signupRequest', errorMessage: 'Invalid credentials'})
       })
   },

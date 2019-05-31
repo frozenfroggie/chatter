@@ -17,7 +17,6 @@ const getters = {
 
 const mutations = {
   updateConversation: (state, payload) => {
-    console.log('????', payload.newConversation)
     state.getConversations.conversations.splice(payload.conversationIndex, 1, payload.newConversation)
   },
   pushNewConversation: (state, payload) => {
@@ -28,7 +27,6 @@ const mutations = {
     state.getConversations.pending = true
   },
   getConversationsSuccess: (state, payload) => {
-    console.log('????', payload)
     state.getConversations.conversations = payload
     state.getConversations.pending = false
   },
@@ -48,14 +46,11 @@ const mutations = {
 
 const actions = {
   getConversations: ({commit, dispatch, state}, payload) => {
-    console.log('get conversations!')
     commit('getConversationsPending')
     axiosAuth.get(`/chat`)
       .then(res => {
-        console.log('success', res.data.conversations.length)
         commit('getConversationsSuccess', res.data.conversations)
         res.data.conversations.forEach(conversation => {
-          console.log(conversation)
           let bot = false
           if (conversation.participants[0] === '5cebee370ce06d0004cfa086' || conversation.participants[1] === '5cebee370ce06d0004cfa086') {
             bot = true
@@ -71,19 +66,16 @@ const actions = {
         })
       })
       .catch(err => {
-        console.log('error', err)
         commit('getConversationsError', err)
       })
   },
   saveNewMessage: ({commit, state}, payload) => {
     return new Promise((resolve, reject) => {
-      console.log(payload)
       const { author, recipent, conversationId } = payload
       let { messageText = '' } = payload
       if (messageText.length > 30) {
         messageText = messageText.slice(0, 30) + ' ...'
       }
-      console.log(conversationId, author._id, recipent._id)
       const newConversation = {
         _id: conversationId,
         participants: [author._id, recipent._id],
@@ -93,19 +85,7 @@ const actions = {
           recipent
         }
       }
-      console.log(newConversation)
-      const conversationIndex = state.getConversations.conversations.findIndex(conversation => {
-        // console.log(newConversation.participants[0])
-        // console.log(newConversation.participants[1])
-        // console.log(conversation.participants)
-        console.log(conversation._id === newConversation._id)
-        return conversation._id === newConversation._id
-        // const conversationParticipants = conversation.participants.filter(participantId => participantId === newConversation.participants[0] || participantId === newConversation.participants[1])
-        // console.log('len', conversationParticipants.length)
-        // console.log('conversationParticipants', conversationParticipants)
-        // return conversationParticipants.length === 2
-      })
-      console.log(conversationIndex)
+      const conversationIndex = state.getConversations.conversations.findIndex(conversation => conversation._id === newConversation._id)
       commit('newMessage', {message: payload, conversationId})
       if (conversationIndex === -1) {
         commit('pushNewConversation', newConversation)
