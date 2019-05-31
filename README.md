@@ -2,9 +2,9 @@
 
 Chatter is a real-time WebSocket chat app. Frontend developed using Vue & Vuex for state menagment.
 
-Backend in separate repository: https://github.com/frozenfroggie/chatter-api
+Backend in separate repository: https://github.com/frozenfroggie/chatter-api.
 
-[Live Chatter App](https://www.chatter.cf).
+[Live Chatter App](https://chatter.cf).
 
 ## Build Setup
 
