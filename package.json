@@ -19,7 +19,7 @@
     "emoji-mart-vue": "^2.6.4",
     "emoji-vue": "^0.2.3",
     "emojione": "^3.1.7",
-    "lodash": "^4.17.10",
+    "lodash": "^4.17.19",
     "moment": "^2.22.1",
     "socket.io-stream": "^0.9.1",
     "vue": "^2.5.2",
